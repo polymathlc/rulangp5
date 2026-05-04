@@ -673,6 +673,75 @@
     color: var(--text-primary);
   }
 
+  /* MCQ shown as four diagram drop zones */
+  .options-as-diagrams {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+  @media (max-width: 600px) {
+    .options-as-diagrams { grid-template-columns: 1fr; }
+  }
+  .option-diagram-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    transition: all var(--transition-base);
+  }
+  .option-diagram-item.selected {
+    border-color: var(--accent-deep);
+    background: var(--accent-bg);
+  }
+  .option-diagram-item.correct-answer {
+    border-color: var(--correct-base);
+    background: var(--correct-bg);
+  }
+  .option-diagram-item.wrong-answer {
+    border-color: var(--wrong-base);
+    background: var(--wrong-bg);
+  }
+  .option-diagram-item.disabled .option-diagram-header { cursor: default; }
+  .option-diagram-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+    user-select: none;
+  }
+  .option-diagram-item.selected .option-radio { border-color: var(--accent-deep); }
+  .option-diagram-item.selected .option-radio::after {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: var(--radius-full);
+    background: var(--accent-deep);
+  }
+  .option-diagram-item.correct-answer .option-radio {
+    border-color: var(--correct-base);
+    background: var(--correct-base);
+    color: white;
+  }
+  .option-diagram-item.correct-answer .option-radio::after {
+    content: '✓'; color: white; font-weight: 700; width: auto; height: auto; background: none;
+  }
+  .option-diagram-item.wrong-answer .option-radio {
+    border-color: var(--wrong-base);
+    background: var(--wrong-base);
+    color: white;
+  }
+  .option-diagram-item.wrong-answer .option-radio::after {
+    content: '✗'; color: white; font-weight: 700; width: auto; height: auto; background: none;
+  }
+  .option-diagram-item.selected .option-marker,
+  .option-diagram-item.correct-answer .option-marker,
+  .option-diagram-item.wrong-answer .option-marker {
+    color: var(--text-primary);
+  }
+
   /* MCQ shown as a comparison table */
   .options-as-table {
     margin: var(--space-lg) 0;
@@ -1561,12 +1630,12 @@
       diagramKey: "q16_fruit_battery",
       diagramLabel: "Fruit battery experiment set-up",
       subStem: "Dalton should set up another circuit using real batteries instead of fruits as a control for his experiment. Which of the following circuits should be the control?",
-      optionsType: "list",
+      optionsType: "diagrams",
       options: [
-        { marker: "(1)", text: "A standard circuit with real batteries, wire, and a bulb." },
-        { marker: "(2)", text: "A circuit with one fruit and one battery." },
-        { marker: "(3)", text: "A circuit with no batteries and no fruits." },
-        { marker: "(4)", text: "A circuit with only wires." }
+        { marker: "(1)", diagramKey: "q16_option_1", diagramLabel: "Option (1) circuit" },
+        { marker: "(2)", diagramKey: "q16_option_2", diagramLabel: "Option (2) circuit" },
+        { marker: "(3)", diagramKey: "q16_option_3", diagramLabel: "Option (3) circuit" },
+        { marker: "(4)", diagramKey: "q16_option_4", diagramLabel: "Option (4) circuit" }
       ],
       correctIndex: 0,
       explanation: "<p>A control set-up uses a <strong>known working power source</strong> — real batteries — to confirm that the rest of the circuit (wires, bulb) actually works. This way, if the bulb in the fruit set-up does not light up, Dalton knows the problem is the fruits and not a faulty bulb or wire.</p>"
@@ -2252,6 +2321,8 @@
       // MCQ — options + submit button
       if (q.optionsType === 'table') {
         card.appendChild(renderOptionsAsTable(q));
+      } else if (q.optionsType === 'diagrams') {
+        card.appendChild(renderOptionsAsDiagrams(q));
       } else {
         card.appendChild(renderOptionsList(q));
       }
@@ -2452,6 +2523,48 @@
   }
 
   /* ============================================================
+     Render MCQ options — each option is a diagram drop zone
+     ============================================================ */
+  function renderOptionsAsDiagrams(q) {
+    var grid = document.createElement('div');
+    grid.className = 'options-as-diagrams';
+    grid.id = 'options-' + q.id;
+
+    q.options.forEach(function(opt, idx) {
+      var item = document.createElement('div');
+      item.className = 'option-diagram-item';
+      item.dataset.questionId = q.id;
+      item.dataset.optionIndex = idx;
+
+      var header = document.createElement('div');
+      header.className = 'option-diagram-header';
+      header.tabIndex = 0;
+      header.setAttribute('role', 'button');
+
+      var radio = document.createElement('div');
+      radio.className = 'option-radio';
+      header.appendChild(radio);
+
+      var marker = document.createElement('span');
+      marker.className = 'option-marker';
+      marker.textContent = opt.marker;
+      header.appendChild(marker);
+
+      header.addEventListener('click', function() { handleOptionSelect(q.id, idx); });
+      header.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOptionSelect(q.id, idx); }
+      });
+
+      item.appendChild(header);
+      item.appendChild(renderImageUploader(opt.diagramKey, opt.diagramLabel, true));
+
+      grid.appendChild(item);
+    });
+
+    return grid;
+  }
+
+  /* ============================================================
      Render diagram section with image uploader
      ============================================================ */
   function renderDiagramSection(diagramKey, label, mini) {
@@ -2597,7 +2710,7 @@
     var optionsContainer = document.getElementById('options-' + questionId);
     if (!optionsContainer) return;
 
-    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr, .option-diagram-item');
     items.forEach(function(item) { item.classList.remove('selected'); });
 
     var target = optionsContainer.querySelector('[data-option-index="' + optionIndex + '"]');
@@ -2622,7 +2735,7 @@
     var card = document.getElementById('question-card-' + questionId);
 
     var optionsContainer = document.getElementById('options-' + questionId);
-    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr, .option-diagram-item');
     items.forEach(function(item) {
       item.classList.add('disabled');
       item.classList.remove('selected');
@@ -2713,7 +2826,7 @@
       submitBtn.innerHTML = '<span>Submit answer</span>';
       var optionsContainer = document.getElementById('options-' + questionId);
       if (optionsContainer) {
-        var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+        var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr, .option-diagram-item');
         items.forEach(function(item) {
           item.classList.remove('selected', 'correct-answer', 'wrong-answer', 'disabled');
         });
