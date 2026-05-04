@@ -1,0 +1,3111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rulang P5 Science EOY 2025 · Polymath Learning Centre</title>
+
+<style>
+  /* ============================================================
+     Roboto for "?" only — Zhi Kai prefers Roboto question marks
+     ============================================================ */
+  @font-face {
+    font-family: 'RobotoQuestion';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2) format('woff2');
+    unicode-range: U+003F;
+  }
+  @font-face {
+    font-family: 'RobotoQuestion';
+    font-style: normal;
+    font-weight: 700;
+    src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format('woff2');
+    unicode-range: U+003F;
+  }
+
+  /* ============================================================
+     Polymath Design Tokens — Science (blue accent)
+     ============================================================ */
+  :root {
+    /* Surface */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #FAFAFA;
+    --bg-tertiary: #F3F3F0;
+    --bg-soft: #F7F9FC;
+    --border-subtle: #E8E8E4;
+    --border-medium: #D4D4CF;
+    --border-strong: #B8B8B2;
+
+    /* Text */
+    --text-primary: #1A1A1A;
+    --text-secondary: #5C5C5C;
+    --text-tertiary: #8A8A8A;
+    --text-inverse: #FFFFFF;
+
+    /* Science blue accent */
+    --accent-light: #BBDEFB;
+    --accent-base: #64B5F6;
+    --accent-dark: #42A5F5;
+    --accent-deep: #1E88E5;
+    --accent-bg: #E3F2FD;
+
+    /* Correctness states */
+    --correct-light: #C8E6C9;
+    --correct-base: #66BB6A;
+    --correct-dark: #2E7D32;
+    --correct-bg: #F1F8E9;
+    --wrong-light: #FFCDD2;
+    --wrong-base: #EF5350;
+    --wrong-dark: #C62828;
+    --wrong-bg: #FFEBEE;
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 4px rgba(0,0,0,0.05), 0 6px 20px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 10px 30px rgba(0,0,0,0.1);
+    --shadow-button: 0 1px 2px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-button-hover: 0 2px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.12);
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+    --space-2xl: 64px;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --radius-full: 999px;
+
+    /* Typography */
+    --font-family: 'RobotoQuestion', 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.5rem;
+    --font-size-xl: 2rem;
+    --font-size-2xl: 2.5rem;
+    --line-height-tight: 1.3;
+    --line-height-normal: 1.6;
+    --line-height-relaxed: 1.75;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.25s ease;
+    --transition-slow: 0.4s ease;
+  }
+
+  /* ============================================================
+     Base reset
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: var(--font-family);
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    line-height: var(--line-height-normal);
+    min-height: 100vh;
+  }
+  img { max-width: 100%; display: block; }
+  input, button, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  button { cursor: pointer; border: none; background: none; }
+  a { color: var(--accent-deep); }
+
+  /* ============================================================
+     Polymath header — logo, sign-in, print
+     ============================================================ */
+  .polymath-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .polymath-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+  .header-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    border: 1.5px solid var(--border-subtle);
+    transition: all var(--transition-base);
+  }
+  .header-button:hover {
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    box-shadow: var(--shadow-button);
+    transform: translateY(-1px);
+  }
+  .header-button .header-icon { font-size: 1rem; line-height: 1; }
+  .header-user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+  }
+  .header-user-pill .user-avatar {
+    width: 22px; height: 22px;
+    border-radius: var(--radius-full);
+    background: var(--accent-base);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .admin-badge {
+    margin-left: 4px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-deep);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* ============================================================
+     Page intro
+     ============================================================ */
+  .page-intro {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+    text-align: center;
+  }
+  .page-eyebrow {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--accent-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-md);
+  }
+  .page-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: var(--space-md);
+    line-height: var(--line-height-tight);
+  }
+  .page-subtitle {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    line-height: var(--line-height-normal);
+  }
+  .meta-row {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+  .meta-pill { display: inline-flex; align-items: center; gap: 6px; }
+  .meta-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--accent-base);
+  }
+
+  /* ============================================================
+     Sticky progress bar
+     ============================================================ */
+  .progress-shell {
+    position: sticky;
+    top: 92px;
+    z-index: 50;
+    background: var(--bg-secondary);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .progress-bar-wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--border-subtle);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-base), var(--accent-deep));
+    width: 0%;
+    transition: width 0.4s ease;
+    border-radius: var(--radius-full);
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+  }
+  .progress-meta strong { color: var(--text-primary); font-weight: 700; }
+
+  /* ============================================================
+     Section headers (A / B dividers)
+     ============================================================ */
+  .section-divider {
+    max-width: 800px;
+    margin: var(--space-2xl) auto var(--space-md);
+    padding: 0 var(--space-lg);
+  }
+  .section-divider-inner {
+    padding: var(--space-lg) var(--space-xl);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--accent-base);
+    box-shadow: var(--shadow-sm);
+  }
+  .section-eyebrow {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--accent-deep);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-xs);
+  }
+  .section-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+  }
+  .section-instructions {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* ============================================================
+     Question cards
+     ============================================================ */
+  .questions-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg) var(--space-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .question-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardFadeIn 0.6s ease forwards;
+    border-left: 4px solid transparent;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  }
+  .question-card.answered-correct {
+    border-left-color: var(--correct-base);
+  }
+  .question-card.answered-wrong {
+    border-left-color: var(--wrong-base);
+  }
+  .question-card.answer-revealed {
+    border-left-color: var(--accent-base);
+  }
+  @keyframes cardFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+  .question-number {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .question-stem {
+    flex: 1;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    padding-top: 8px;
+    color: var(--text-primary);
+  }
+  .question-sub {
+    margin-top: var(--space-md);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--text-primary);
+  }
+  .marks-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    font-size: 0.8em;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+
+  .list-items-box {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-md) 0;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+  }
+  .list-items-box .list-item {
+    margin-bottom: var(--space-sm);
+  }
+  .list-items-box .list-item:last-child { margin-bottom: 0; }
+  .list-items-box .list-marker {
+    display: inline-block;
+    min-width: 22px;
+    font-weight: 700;
+    color: var(--accent-deep);
+  }
+
+  /* ============================================================
+     Data tables (inside questions)
+     ============================================================ */
+  .data-table-wrapper {
+    margin: var(--space-md) 0 var(--space-lg);
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-primary);
+    font-size: var(--font-size-sm);
+  }
+  .data-table th, .data-table td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-subtle);
+    border-right: 1px solid var(--border-subtle);
+  }
+  .data-table th:last-child, .data-table td:last-child { border-right: none; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table thead th {
+    background: var(--bg-tertiary);
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+  }
+  .data-table tbody td { text-align: center; color: var(--text-secondary); }
+  .data-table tbody td:first-child {
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: left;
+    background: var(--bg-soft);
+  }
+
+  /* ============================================================
+     Diagram section + image uploader (admin upload, paste, drag)
+     ============================================================ */
+  .diagram-section {
+    margin: var(--space-md) 0 var(--space-lg);
+  }
+  .diagram-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+  .label-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .image-uploader {
+    width: 100%;
+    min-height: 180px;
+    border: 2px dashed var(--border-medium);
+    border-radius: var(--radius-md);
+    background: var(--bg-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    padding: var(--space-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    outline: none;
+  }
+  .image-uploader:hover, .image-uploader:focus, .image-uploader.is-paste-target {
+    border-color: var(--accent-base);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+  }
+  .image-uploader.drag-over {
+    border-color: var(--accent-deep);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    transform: scale(1.005);
+  }
+  .image-uploader.has-image {
+    border-style: solid;
+    border-color: var(--border-subtle);
+    background: var(--bg-primary);
+    padding: 0;
+    min-height: auto;
+    cursor: default;
+  }
+  .image-uploader.locked {
+    cursor: not-allowed;
+    opacity: 0.85;
+  }
+  .upload-hint {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    pointer-events: none;
+  }
+  .upload-hint .upload-hint-main {
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .upload-hint .upload-hint-sub {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+  }
+  .upload-hidden-input {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .uploaded-image-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  .uploaded-image {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: var(--bg-soft);
+  }
+  .replace-image-button {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: rgba(26, 26, 26, 0.85);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+  }
+  .replace-image-button:hover { background: rgba(26, 26, 26, 1); transform: translateY(-1px); }
+
+  .upload-spinner {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    flex-direction: column;
+    gap: var(--space-sm);
+    z-index: 5;
+  }
+  .upload-spinner.active { display: flex; }
+  .spinner-circle {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border-subtle);
+    border-top-color: var(--accent-deep);
+    border-radius: var(--radius-full);
+    animation: spin 0.9s linear infinite;
+  }
+  .spinner-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    font-weight: 600;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Mini uploader (inside tables) */
+  .mini-uploader {
+    min-height: 100px;
+    padding: var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+  .mini-uploader .uploaded-image { max-height: 220px; }
+
+  /* ============================================================
+     MCQ options — list and table
+     ============================================================ */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+  }
+  .option-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    background: var(--bg-primary);
+    user-select: none;
+  }
+  .option-item:hover:not(.disabled) {
+    border-color: var(--accent-base);
+    background: var(--accent-bg);
+  }
+  .option-item.selected {
+    border-color: var(--accent-deep);
+    background: var(--accent-bg);
+  }
+  .option-item.correct-answer {
+    border-color: var(--correct-base);
+    background: var(--correct-bg);
+  }
+  .option-item.wrong-answer {
+    border-color: var(--wrong-base);
+    background: var(--wrong-bg);
+  }
+  .option-item.disabled { cursor: default; }
+  .option-radio {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border-medium);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: all var(--transition-base);
+    font-size: 12px;
+  }
+  .option-item.selected .option-radio { border-color: var(--accent-deep); }
+  .option-item.selected .option-radio::after {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: var(--radius-full);
+    background: var(--accent-deep);
+  }
+  .option-item.correct-answer .option-radio {
+    border-color: var(--correct-base);
+    background: var(--correct-base);
+    color: white;
+  }
+  .option-item.correct-answer .option-radio::after { content: '✓'; color: white; font-weight: 700; width: auto; height: auto; background: none; }
+  .option-item.wrong-answer .option-radio {
+    border-color: var(--wrong-base);
+    background: var(--wrong-base);
+    color: white;
+  }
+  .option-item.wrong-answer .option-radio::after { content: '✗'; color: white; font-weight: 700; width: auto; height: auto; background: none; }
+  .option-label {
+    flex: 1;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+  }
+  .option-marker {
+    display: inline-block;
+    min-width: 28px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    margin-right: var(--space-sm);
+  }
+  .option-item.selected .option-marker,
+  .option-item.correct-answer .option-marker,
+  .option-item.wrong-answer .option-marker {
+    color: var(--text-primary);
+  }
+
+  /* MCQ shown as a comparison table */
+  .options-as-table {
+    margin: var(--space-lg) 0;
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+  .options-as-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-primary);
+    font-size: var(--font-size-sm);
+  }
+  .options-as-table th, .options-as-table td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+    border-right: 1px solid var(--border-subtle);
+  }
+  .options-as-table th:last-child, .options-as-table td:last-child { border-right: none; }
+  .options-as-table thead th {
+    background: var(--bg-tertiary);
+    font-weight: 700;
+  }
+  .options-as-table tbody tr {
+    cursor: pointer;
+    transition: background var(--transition-base);
+  }
+  .options-as-table tbody tr:hover:not(.disabled) {
+    background: var(--accent-bg);
+  }
+  .options-as-table tbody tr.selected {
+    background: var(--accent-bg);
+    font-weight: 600;
+  }
+  .options-as-table tbody tr.correct-answer { background: var(--correct-bg); }
+  .options-as-table tbody tr.wrong-answer { background: var(--wrong-bg); }
+  .options-as-table tbody tr.disabled { cursor: default; }
+  .options-as-table .option-marker-cell {
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: var(--bg-soft);
+    min-width: 48px;
+  }
+
+  /* ============================================================
+     Open-ended response area
+     ============================================================ */
+  .response-section { margin-top: var(--space-md); }
+  .response-input {
+    width: 100%;
+    min-height: 110px;
+    padding: var(--space-md);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-soft);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    resize: vertical;
+    transition: all var(--transition-base);
+    outline: none;
+  }
+  .response-input:focus {
+    border-color: var(--accent-base);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  .response-input::placeholder { color: var(--text-tertiary); }
+
+  /* ============================================================
+     Action row (submit / reset / show answer)
+     ============================================================ */
+  .action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    flex-wrap: wrap;
+  }
+  .action-row-left { display: inline-flex; gap: var(--space-md); flex-wrap: wrap; }
+  .action-row-right { display: inline-flex; gap: var(--space-sm); align-items: center; color: var(--text-tertiary); font-size: var(--font-size-xs); }
+
+  .submit-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 12px 28px;
+    border-radius: var(--radius-full);
+    background: var(--accent-deep);
+    color: var(--text-inverse);
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    box-shadow: var(--shadow-button);
+    transition: all var(--transition-base);
+    min-width: 180px;
+    justify-content: center;
+  }
+  .submit-button:hover:not(:disabled) {
+    background: var(--accent-dark);
+    box-shadow: var(--shadow-button-hover);
+    transform: translateY(-1px);
+  }
+  .submit-button:active:not(:disabled) { transform: translateY(0); }
+  .submit-button:disabled {
+    background: var(--border-medium);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  .submit-button.submitted {
+    background: var(--correct-base);
+  }
+  .submit-button.submitted-wrong { background: var(--wrong-base); }
+  .submit-button.answer-shown { background: var(--accent-base); }
+
+  .reset-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    border: 1.5px solid var(--border-subtle);
+    transition: all var(--transition-base);
+  }
+  .reset-button:hover {
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    background: var(--bg-soft);
+  }
+
+  /* ============================================================
+     Feedback panel
+     ============================================================ */
+  .feedback-panel {
+    margin-top: var(--space-lg);
+    padding: 0 var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    border-left: 4px solid var(--accent-base);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease;
+  }
+  .feedback-panel.visible {
+    opacity: 1;
+    max-height: 3000px;
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
+  }
+  .feedback-panel.correct {
+    background: var(--correct-bg);
+    border-left-color: var(--correct-base);
+  }
+  .feedback-panel.wrong {
+    background: var(--wrong-bg);
+    border-left-color: var(--wrong-base);
+  }
+  .feedback-panel.revealed {
+    background: var(--accent-bg);
+    border-left-color: var(--accent-base);
+  }
+  .feedback-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+  .feedback-icon-circle {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-full);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .feedback-icon-circle.correct { background: var(--correct-base); color: white; }
+  .feedback-icon-circle.wrong { background: var(--wrong-base); color: white; }
+  .feedback-icon-circle.revealed { background: var(--accent-base); color: white; }
+  .feedback-title {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .feedback-title.correct { color: var(--correct-dark); }
+  .feedback-title.wrong { color: var(--wrong-dark); }
+  .feedback-title.revealed { color: var(--accent-deep); }
+  .feedback-answer-line {
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+  }
+  .answer-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: var(--accent-deep);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    margin-left: var(--space-sm);
+  }
+  .explanation-heading {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+  .explanation-body {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--text-primary);
+  }
+  .explanation-body p { margin-bottom: var(--space-sm); }
+  .explanation-body p:last-child { margin-bottom: 0; }
+  .explanation-body strong { color: var(--text-primary); font-weight: 700; }
+  .explanation-body em { color: var(--accent-deep); font-style: normal; font-weight: 600; }
+
+  /* ============================================================
+     Score summary
+     ============================================================ */
+  .score-summary {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--space-xl);
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .score-summary.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .score-summary-eyebrow {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--accent-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-sm);
+  }
+  .score-summary-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+  }
+  .score-display {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent-deep);
+    margin-bottom: var(--space-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .score-display .denominator { color: var(--text-tertiary); }
+  .score-message {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    line-height: var(--line-height-relaxed);
+  }
+  .score-actions {
+    display: inline-flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ============================================================
+     Footer
+     ============================================================ */
+  .page-footer {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-lg);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-2xl);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* ============================================================
+     Toast notifications
+     ============================================================ */
+  .toast-container {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    pointer-events: none;
+  }
+  .toast {
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    background: var(--text-primary);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: auto;
+    max-width: 320px;
+  }
+  .toast.visible { opacity: 1; transform: translateY(0); }
+  .toast.success { background: var(--correct-dark); }
+  .toast.error { background: var(--wrong-dark); }
+  .toast.info { background: var(--accent-deep); }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 640px) {
+    .polymath-header { padding: var(--space-sm) var(--space-md); }
+    .polymath-logo { height: 44px; }
+    .header-button { padding: 6px 12px; font-size: var(--font-size-xs); }
+    .progress-shell { top: 76px; }
+    .page-intro { padding: var(--space-xl) var(--space-md) var(--space-lg); }
+    .page-title { font-size: 1.5rem; }
+    .question-card { padding: var(--space-lg); border-radius: var(--radius-lg); }
+    .question-number { width: 36px; height: 36px; font-size: var(--font-size-sm); }
+    .submit-button { width: 100%; min-width: 0; }
+    .reset-button { width: 100%; justify-content: center; }
+    .action-row-left { width: 100%; }
+    .action-row-right { width: 100%; justify-content: center; }
+  }
+
+  /* ============================================================
+     Print — A4 fidelity
+     ============================================================ */
+  @media print {
+    @page {
+      size: A4;
+      margin: 15mm 18mm;
+    }
+    body { background: white; color: black; }
+    .polymath-header {
+      position: static;
+      border-bottom: 1px solid #ccc;
+      padding: 8mm 0;
+    }
+    .polymath-logo {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    .header-actions, .progress-shell, .toast-container,
+    .submit-button, .reset-button, .action-row,
+    .replace-image-button, .upload-spinner,
+    .score-actions { display: none !important; }
+    .image-uploader.has-image {
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+    .image-uploader:not(.has-image) {
+      min-height: 60px;
+      border: 1px dashed #999;
+      background: white;
+      color: #666;
+      font-size: 0.75rem;
+    }
+    .upload-hint-sub { display: none; }
+    .question-card {
+      box-shadow: none;
+      border: 1px solid #ddd;
+      border-left: 1px solid #ddd;
+      page-break-inside: avoid;
+      padding: 6mm;
+      margin-bottom: 4mm;
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .question-card.answered-correct,
+    .question-card.answered-wrong,
+    .question-card.answer-revealed {
+      border-left: 3px solid #999;
+    }
+    .feedback-panel {
+      page-break-inside: avoid;
+      box-shadow: none;
+    }
+    .feedback-panel.visible {
+      max-height: none !important;
+    }
+    .response-input {
+      border: 1px solid #ccc;
+      background: white;
+      min-height: 80px;
+    }
+    .question-card, .feedback-panel, .score-summary {
+      page-break-inside: avoid;
+    }
+    .section-divider, .section-divider-inner {
+      box-shadow: none;
+      border-left: 3px solid #999;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER — logo, sign-in, print
+     ============================================================ -->
+<header class="polymath-header">
+  <a href="#top" id="topAnchor">
+    <img src="https://dl.dropboxusercontent.com/scl/fi/h40yjlyg8ldefwfaa3dib/polymath-logo-sticker.png?rlkey=o1ra4taqy79gt9t8u096v82zj"
+         alt="Polymath Learning Centre"
+         class="polymath-logo" />
+  </a>
+  <div class="header-actions">
+    <button id="signInButton" class="header-button" type="button" title="Sign in with Google for admin access">
+      <span class="header-icon">👤</span>
+      <span id="signInLabel">Sign in</span>
+    </button>
+    <button id="printButton" class="header-button" type="button" title="Print this paper" onclick="window.print();">
+      <span class="header-icon">🖨</span>
+      <span>Print</span>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================
+     INTRO
+     ============================================================ -->
+<section class="page-intro">
+  <div class="page-eyebrow">Rulang Primary School · Primary 5 · Science</div>
+  <h1 class="page-title">End of Year Examination 2025</h1>
+  <p class="page-subtitle">Practise the full paper online — submit MCQ answers to see explanations and reveal model answers for structured questions.</p>
+  <div class="meta-row">
+    <span class="meta-pill"><span class="dot"></span>Section A: 30 MCQ</span>
+    <span class="meta-pill"><span class="dot"></span>Section B: 11 Structured</span>
+    <span class="meta-pill"><span class="dot"></span>Total: 100 marks</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     STICKY PROGRESS BAR
+     ============================================================ -->
+<div class="progress-shell">
+  <div class="progress-bar-wrapper">
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <div class="progress-meta">
+      <span id="progressLabel"><strong>0</strong> of <strong id="progressTotal">41</strong> questions answered</span>
+      <span id="progressMcqLabel"><strong id="mcqCorrect">0</strong> / <strong id="mcqAttempted">0</strong> MCQ correct</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION A header
+     ============================================================ -->
+<div class="section-divider">
+  <div class="section-divider-inner">
+    <div class="section-eyebrow">Section A</div>
+    <div class="section-title">Multiple-Choice Questions (60 marks)</div>
+    <div class="section-instructions">For each question from <strong>1</strong> to <strong>30</strong>, four options are given. Choose the most suitable answer. Each question carries 2 marks.</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     QUESTION CARDS render here
+     ============================================================ -->
+<main id="questionsContainerA" class="questions-container"></main>
+
+<!-- SECTION B header -->
+<div class="section-divider">
+  <div class="section-divider-inner">
+    <div class="section-eyebrow">Section B</div>
+    <div class="section-title">Structured Questions (40 marks)</div>
+    <div class="section-instructions">For questions <strong>31</strong> to <strong>41</strong>, write your answers in the boxes provided. The number of marks is given in brackets <strong>[ ]</strong> at the end of each question or part-question.</div>
+  </div>
+</div>
+
+<main id="questionsContainerB" class="questions-container"></main>
+
+<!-- ============================================================
+     SCORE SUMMARY
+     ============================================================ -->
+<section id="scoreSummary" class="score-summary">
+  <div class="score-summary-eyebrow">All done</div>
+  <div class="score-summary-title">Great work finishing the paper!</div>
+  <div class="score-display">
+    <span id="scoreCorrect">0</span><span class="denominator">/</span><span class="denominator" id="scoreTotal">30</span>
+  </div>
+  <div class="score-message" id="scoreMessage">MCQ score · structured questions are reviewed by your teacher.</div>
+  <div class="score-actions">
+    <button id="restartButton" class="submit-button" type="button">Restart paper</button>
+    <button class="reset-button" type="button" onclick="window.print();">Print results</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="page-footer">
+  Polymath Learning Centre · Rulang P5 Science EOY 2025 Practice<br />
+  Reproduced word-for-word from the original 2025 EOY paper for revision purposes.
+</footer>
+
+<div id="toastContainer" class="toast-container"></div>
+
+
+<!-- ============================================================
+     FIREBASE SDK
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+<script>
+  /* ============================================================
+     Firebase initialisation — Polymath shared project
+     ============================================================ */
+  firebase.initializeApp({
+    apiKey: "AIzaSyAUSI3Uh28IeqASEp0JhH4QPaVt-O3meBo",
+    authDomain: "mathgen--app.firebaseapp.com",
+    projectId: "mathgen--app",
+    storageBucket: "mathgen--app.firebasestorage.app",
+    messagingSenderId: "165654161198",
+    appId: "1:165654161198:web:16c8bd60eb3a2aa7edbcbf",
+    measurementId: "G-0MWZFG211D"
+  });
+
+  var db = firebase.firestore();
+  var auth = firebase.auth();
+  var storage = firebase.storage();
+
+  var ADMIN_EMAIL = "chungzhikai@gmail.com";
+  var APP_ID = "rulang_p5_science_eoy_2025";
+  var APP_DOC_REF = db.collection("apps").doc(APP_ID);
+
+  var isAdmin = false;
+  var currentUser = null;
+  var diagramImages = {}; // { diagramKey: imageURL }
+  var lastHoveredUploaderKey = null;
+</script>
+
+<script>
+  /* ============================================================
+     Questions data — Rulang P5 Science EOY 2025
+     Word-for-word from the source paper.
+     ============================================================ */
+  var questions = [
+    /* ============================================================
+       SECTION A — MULTIPLE CHOICE (Questions 1 to 30)
+       ============================================================ */
+    {
+      id: 1,
+      section: "A",
+      type: "mcq",
+      stem: "Which of the following statements about cells are true?",
+      listItems: [
+        { marker: "A", text: "A cell is the basic unit of life." },
+        { marker: "B", text: "Non-living things are made up of cells." },
+        { marker: "C", text: "Different types of cells make up different body parts." },
+        { marker: "D", text: "Most cells are too small to be seen with the naked eye." }
+      ],
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A and C only" },
+        { marker: "(2)", text: "B and D only" },
+        { marker: "(3)", text: "A, C and D only" },
+        { marker: "(4)", text: "A, B, C and D" }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Statements A, C and D are true. Statement B is false because <strong>non-living things are not made up of cells</strong> — only living things are.</p>"
+    },
+    {
+      id: 2,
+      section: "A",
+      type: "mcq",
+      stem: "The diagram below shows the cross-section of fruit P.",
+      needsDiagram: true,
+      diagramKey: "q2_fruit_p",
+      diagramLabel: "Cross-section of fruit P",
+      subStem: "Which of the following statements are likely to be true about fruit P?",
+      listItems: [
+        { marker: "A", text: "The flower of P has many ovules." },
+        { marker: "B", text: "The flower of P has only one ovule." },
+        { marker: "C", text: "The seed of P is most likely dispersed by water." },
+        { marker: "D", text: "The seed of P is most likely thrown away when the fruit is eaten." }
+      ],
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A and C only" },
+        { marker: "(2)", text: "A and D only" },
+        { marker: "(3)", text: "B and C only" },
+        { marker: "(4)", text: "B and D only" }
+      ],
+      correctIndex: 3,
+      explanation: "<p>Fruit P has only <strong>one seed</strong>, which means its flower had only <strong>one ovule</strong> (B is true). The fleshy part of the fruit is eaten and the large hard seed is thrown away or spat out by the animal/human (D is true).</p>"
+    },
+    {
+      id: 3,
+      section: "A",
+      type: "mcq",
+      stem: "In the diagram below, K represents the processes during reproduction of a plant.",
+      needsDiagram: true,
+      diagramKey: "q3_plant_reproduction",
+      diagramLabel: "flower → K → seed",
+      subStem: "Which of the following processes does <strong>not</strong> take place at K?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "pollination" },
+        { marker: "(2)", text: "fertilisation" },
+        { marker: "(3)", text: "germination" },
+        { marker: "(4)", text: "seed dispersal" }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Between flower and seed, the plant goes through pollination, fertilisation and the formation of seeds (sometimes followed by dispersal). <strong>Germination</strong> only happens <em>after</em> the seed has formed and lands in suitable conditions, when it grows into a young plant. So germination is not part of K.</p>"
+    },
+    {
+      id: 4,
+      section: "A",
+      type: "mcq",
+      stem: "Sarah observed some characteristics of herself and her family members and drew the family tree shown below.",
+      needsDiagram: true,
+      diagramKey: "q4_family_tree",
+      diagramLabel: "Sarah's family tree showing eye colour and dimples",
+      subStem: "Which of the statements best explains Sarah's observations?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Children always look exactly like their parents." },
+        { marker: "(2)", text: "Children inherit characteristics from only one parent." },
+        { marker: "(3)", text: "Only physical features like height are passed from parents to children." },
+        { marker: "(4)", text: "Eye colour and dimples are characteristics that can be inherited from parents." }
+      ],
+      correctIndex: 3,
+      explanation: "<p>The family tree shows that the children share specific traits — eye colour and dimples — with one or both parents. This shows that these traits can be <strong>inherited</strong>. Children do not always look exactly like their parents (option 1) and they can inherit traits from both parents (option 2), so those statements are too strong.</p>"
+    },
+    {
+      id: 5,
+      section: "A",
+      type: "mcq",
+      stem: "Cheryl wanted to investigate if sunlight is needed for the germination of seeds using 2 set-ups.",
+      subStem: "What variables must she keep the same in both the set-ups to make the experiment a fair test?",
+      listItems: [
+        { marker: "A", text: "Amount of soil" },
+        { marker: "B", text: "Number of seeds" },
+        { marker: "C", text: "Presence of sunlight" },
+        { marker: "D", text: "Amount of water added to the soil" }
+      ],
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "C only" },
+        { marker: "(2)", text: "A and B only" },
+        { marker: "(3)", text: "B and C only" },
+        { marker: "(4)", text: "A, B and D only" }
+      ],
+      correctIndex: 3,
+      explanation: "<p>The variable being tested is the <strong>presence of sunlight</strong>, so this is the variable that must be different between the two set-ups (the changed variable). For a fair test, all the other variables — amount of soil (A), number of seeds (B) and amount of water (D) — must be kept the same.</p>"
+    },
+    {
+      id: 6,
+      section: "A",
+      type: "mcq",
+      stem: "Three types of flowering plants, P, Q and R, were growing in area X as shown in diagram 1. Two years later, more P, Q and R were found growing in the fields as shown in diagram 2.",
+      needsDiagram: true,
+      diagramKey: "q6_plant_dispersal",
+      diagramLabel: "Diagrams 1 and 2 showing how P, Q and R have spread",
+      subStem: "Which of the following are the likely characteristics of the fruits / seeds of plants, P, Q and R?",
+      optionsType: "table",
+      optionsTableHeaders: ["Fruit / seed of plant P", "Fruit / seed of plant Q", "Fruit / seed of plant R"],
+      options: [
+        { marker: "(1)", cells: ["fibrous husk", "splits open when ripe", "wing-like structure"] },
+        { marker: "(2)", cells: ["fleshy and brightly coloured", "hook-like structures", "wing-like structure"] },
+        { marker: "(3)", cells: ["splits open when ripe", "fibrous husk", "fleshy and brightly coloured"] },
+        { marker: "(4)", cells: ["fibrous husk", "wing-like structure", "splits open when ripe"] }
+      ],
+      correctIndex: 0,
+      explanation: "<p><strong>Plant P</strong> spread along the river, so its seeds are dispersed by <em>water</em> — fibrous husk. <strong>Plant Q</strong> stayed clustered around its parent, so the seeds are dispersed by <em>splitting</em> action. <strong>Plant R</strong> spread in the direction of the wind, so its seeds have a <em>wing-like structure</em> for wind dispersal.</p>"
+    },
+    {
+      id: 7,
+      section: "A",
+      type: "mcq",
+      stem: "Three identical syringes were covered with black tape. Each of them contained different substances, A, B and C. The distance X of each plunger was 7 cm at first. The distance X was then measured and recorded below after the plunger was pushed with the same amount of force.",
+      needsDiagram: true,
+      diagramKey: "q7_syringes",
+      diagramLabel: "Three identical syringes A, B and C",
+      dataTable: {
+        headers: ["Substance", "A", "B", "C"],
+        rows: [
+          ["Distance X before pushing (cm)", "7", "7", "7"],
+          ["Distance X after pushing (cm)", "7", "4", "7"]
+        ]
+      },
+      subStem: "What could the states of A, B and C be?",
+      optionsType: "table",
+      optionsTableHeaders: ["A", "B", "C"],
+      options: [
+        { marker: "(1)", cells: ["Solid", "Gas", "Liquid"] },
+        { marker: "(2)", cells: ["Solid", "Liquid", "Gas"] },
+        { marker: "(3)", cells: ["Liquid", "Solid", "Gas"] },
+        { marker: "(4)", cells: ["Gas", "Liquid", "Solid"] }
+      ],
+      correctIndex: 0,
+      explanation: "<p>Substance B was compressed (7 cm → 4 cm), so it is a <strong>gas</strong> (only gases can be compressed easily). Substances A and C could not be compressed, so they must be either <strong>solids or liquids</strong>. Option (1) — Solid, Gas, Liquid — fits.</p>"
+    },
+    {
+      id: 8,
+      section: "A",
+      type: "mcq",
+      stem: "On a rainy morning, Marcus noticed that water droplets had formed on the inside of the glass windows of the school bus.",
+      subStem: "Which statement best explains this observation?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "The air inside the bus was cooler than the air outside." },
+        { marker: "(2)", text: "The water droplets came from rainwater leaking through the glass." },
+        { marker: "(3)", text: "Cooler air outside the bus entered through the glass and formed droplets." },
+        { marker: "(4)", text: "Warm water vapour inside the bus came into contact with the cooler glass surfaces." }
+      ],
+      correctIndex: 3,
+      explanation: "<p>The rain cooled the bus windows. The <strong>warm water vapour</strong> inside the bus (from the passengers' breath and bodies) came into contact with the cooler inner surface of the glass, lost heat, and <em>condensed</em> into water droplets.</p>"
+    },
+    {
+      id: 9,
+      section: "A",
+      type: "mcq",
+      stem: "The graph below shows the changes in temperature of water when it is heated continuously.",
+      needsDiagram: true,
+      diagramKey: "q9_heating_graph",
+      diagramLabel: "Graph: temperature vs time as water is heated, with sections X, Y and Z",
+      subStem: "Based on the graph, which of the following is true?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Water is changed to steam at Z." },
+        { marker: "(2)", text: "Evaporation only takes place at Y." },
+        { marker: "(3)", text: "Freezing and melting take place at X." },
+        { marker: "(4)", text: "The water begins boiling after two minutes." }
+      ],
+      correctIndex: 0,
+      explanation: "<p>At part Z, the water has reached its boiling point and the temperature stays constant — the water is <strong>boiling</strong>, changing from liquid to steam (gas). Evaporation can happen at any temperature, not only at Y. Freezing does not happen on a heating graph. Boiling does not start at 2 minutes.</p>"
+    },
+    {
+      id: 10,
+      section: "A",
+      type: "mcq",
+      stem: "Four containers, A, B, C and D, were each filled with 300 ml of water. They were placed side by side in one corner of a room as shown below.",
+      needsDiagram: true,
+      diagramKey: "q10_containers",
+      diagramLabel: "Four containers A, B, C and D with different opening sizes",
+      subStem: "After 6 hours, which of the following correctly shows the order of the containers from the most water left to the least water left?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A, D, B, C" },
+        { marker: "(2)", text: "A, C, B, D" },
+        { marker: "(3)", text: "C, A, D, B" },
+        { marker: "(4)", text: "D, B, C, A" }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Evaporation is faster when the <strong>exposed water surface area is larger</strong>. The container with the smallest opening loses the least water (most water left); the container with the widest opening loses the most water (least water left). Order from most → least water left: <strong>C, A, D, B</strong>.</p>"
+    },
+    {
+      id: 11,
+      section: "A",
+      type: "mcq",
+      stem: "Ryan wants to conduct an experiment to show that plants take in water through their roots. He has the following set-ups, P, Q, R and S, as shown below.",
+      needsDiagram: true,
+      diagramKey: "q11_roots_experiment",
+      diagramLabel: "Set-ups P, Q, R and S — plants with/without roots and with/without oil layer",
+      subStem: "Which two set-ups should he use to carry out a fair test?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "P and Q" },
+        { marker: "(2)", text: "P and R" },
+        { marker: "(3)", text: "Q and R" },
+        { marker: "(4)", text: "Q and S" }
+      ],
+      correctIndex: 1,
+      explanation: "<p>To prove that water is taken in through the <strong>roots</strong>, the only thing that should differ between the two set-ups is the presence/absence of roots. Both set-ups must have an oil layer on top so that water lost from the beaker is only due to the plant, not evaporation. Set-ups P (with roots, oil) and R (no roots, oil) match this requirement.</p>"
+    },
+    {
+      id: 12,
+      section: "A",
+      type: "mcq",
+      stem: "The diagram below shows a river with factories and crops nearby. The following table shows the number of fish caught in different parts of the river and the amount of rice crops harvested from fields near each part in one day.",
+      needsDiagram: true,
+      diagramKey: "q12_river_pollution",
+      diagramLabel: "River with factories and rice fields at parts E, F and G",
+      dataTable: {
+        headers: ["Part of river", "Number of fish caught", "Amount of rice harvested (kg)"],
+        rows: [
+          ["E", "30", "50"],
+          ["F", "10", "25"],
+          ["G", "0", "15"]
+        ]
+      },
+      subStem: "Based on the table, which statement is <strong>not</strong> a possible conclusion?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Fish at E were the healthiest." },
+        { marker: "(2)", text: "Polluted water at F harmed both the fish and crops." },
+        { marker: "(3)", text: "Polluted water at G was the most harmful to the fish and crops." },
+        { marker: "(4)", text: "Rice crops near the factories at F grew better than those near E." }
+      ],
+      correctIndex: 3,
+      explanation: "<p>The table shows 50 kg of rice harvested at E, but only 25 kg at F. So rice crops grew <strong>worse</strong> near F than near E, not better. Statement (4) is not supported by the data.</p>"
+    },
+    {
+      id: 13,
+      section: "A",
+      type: "mcq",
+      stem: "Study the flowchart below.",
+      needsDiagram: true,
+      diagramKey: "q13_flowchart",
+      diagramLabel: "Flowchart of plant parts A, B and C with their functions",
+      subStem: "Which of the following correctly identifies A, B and C?",
+      optionsType: "table",
+      optionsTableHeaders: ["A", "B", "C"],
+      options: [
+        { marker: "(1)", cells: ["Food-carrying tubes", "Leaves", "Roots"] },
+        { marker: "(2)", cells: ["Food-carrying tubes", "Leaves", "Water-carrying tubes"] },
+        { marker: "(3)", cells: ["Leaves", "Food-carrying tubes", "Water-carrying tubes"] },
+        { marker: "(4)", cells: ["Leaves", "Food-carrying tubes", "Roots"] }
+      ],
+      correctIndex: 1,
+      explanation: "<p>A transports food → <strong>food-carrying tubes</strong>. B makes food (photosynthesis) → <strong>leaves</strong>. C transports water → <strong>water-carrying tubes</strong>.</p>"
+    },
+    {
+      id: 14,
+      section: "A",
+      type: "mcq",
+      stem: "A colony of ants were kept in a sealed container for an hour.",
+      subStem: "Which of the following shows the correct changes in the composition of air in the sealed container?",
+      optionsType: "table",
+      optionsTableHeaders: ["Oxygen", "Carbon dioxide"],
+      options: [
+        { marker: "(1)", cells: ["increased", "decreased"] },
+        { marker: "(2)", cells: ["decreased", "increased"] },
+        { marker: "(3)", cells: ["decreased", "no change"] },
+        { marker: "(4)", cells: ["no change", "increased"] }
+      ],
+      correctIndex: 1,
+      explanation: "<p>Ants are living things and they <strong>respire</strong>: they take in oxygen and give out carbon dioxide. Inside a sealed container, the oxygen level <em>decreases</em> while the carbon dioxide level <em>increases</em>.</p>"
+    },
+    {
+      id: 15,
+      section: "A",
+      type: "mcq",
+      stem: "The diagram below shows the direction of blood flow to and from the heart.",
+      needsDiagram: true,
+      diagramKey: "q15_blood_flow",
+      diagramLabel: "Heart with blood vessels A and B labelled",
+      subStem: "Which of the following correctly describes the blood in the blood vessels at A and B?",
+      optionsType: "table",
+      optionsTableHeaders: ["A", "B"],
+      options: [
+        { marker: "(1)", cells: ["rich in oxygen", "rich in carbon dioxide"] },
+        { marker: "(2)", cells: ["rich in oxygen", "poor in carbon dioxide"] },
+        { marker: "(3)", cells: ["rich in carbon dioxide", "rich in oxygen"] },
+        { marker: "(4)", cells: ["poor in carbon dioxide", "rich in oxygen"] }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Blood vessel A carries blood from the heart to the lungs (deoxygenated, <strong>rich in carbon dioxide</strong>). Blood vessel B carries blood from the heart to the rest of the body (oxygenated, <strong>rich in oxygen</strong>).</p>"
+    },
+    {
+      id: 16,
+      section: "A",
+      type: "mcq",
+      stem: "Dalton wanted to find out if fruits could be used to light up a bulb. He set up his experiment as shown below.",
+      needsDiagram: true,
+      diagramKey: "q16_fruit_battery",
+      diagramLabel: "Fruit battery experiment set-up",
+      subStem: "Dalton should set up another circuit using real batteries instead of fruits as a control for his experiment. Which of the following circuits should be the control?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A standard circuit with real batteries, wire, and a bulb." },
+        { marker: "(2)", text: "A circuit with one fruit and one battery." },
+        { marker: "(3)", text: "A circuit with no batteries and no fruits." },
+        { marker: "(4)", text: "A circuit with only wires." }
+      ],
+      correctIndex: 0,
+      explanation: "<p>A control set-up uses a <strong>known working power source</strong> — real batteries — to confirm that the rest of the circuit (wires, bulb) actually works. This way, if the bulb in the fruit set-up does not light up, Dalton knows the problem is the fruits and not a faulty bulb or wire.</p>"
+    },
+    {
+      id: 17,
+      section: "A",
+      type: "mcq",
+      stem: "Study the diagram below showing how systems J and K and the Digestive System interact.",
+      needsDiagram: true,
+      diagramKey: "q17_body_systems",
+      diagramLabel: "Interaction between systems J, K and the Digestive System with substances A and B",
+      subStem: "Which of the following correctly shows substances A and B and systems J and K?",
+      optionsType: "table",
+      optionsTableHeaders: ["Substance A", "Substance B", "System J", "System K"],
+      options: [
+        { marker: "(1)", cells: ["Oxygen", "Carbon dioxide", "Respiratory", "Circulatory"] },
+        { marker: "(2)", cells: ["Oxygen", "Carbon dioxide", "Circulatory", "Respiratory"] },
+        { marker: "(3)", cells: ["Carbon dioxide", "Oxygen", "Respiratory", "Circulatory"] },
+        { marker: "(4)", cells: ["Carbon dioxide", "Oxygen", "Circulatory", "Respiratory"] }
+      ],
+      correctIndex: 0,
+      explanation: "<p>System K transports digested food and gases around the body — that is the <strong>Circulatory System</strong>. System J supplies oxygen (A) to K and removes carbon dioxide (B) — that is the <strong>Respiratory System</strong>. So A = Oxygen, B = Carbon dioxide.</p>"
+    },
+    {
+      id: 18,
+      section: "A",
+      type: "mcq",
+      stem: "The circuit below has four bulb holders labelled A, B, C and D.",
+      needsDiagram: true,
+      diagramKey: "q18_circuit",
+      diagramLabel: "Circuit with bulb holders A, B, C and D",
+      subStem: "Two bulbs are fixed in the bulb holders such that both bulbs will light up. In which two bulb holders are the bulbs fixed?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A and B" },
+        { marker: "(2)", text: "A and D" },
+        { marker: "(3)", text: "B and C" },
+        { marker: "(4)", text: "B and D" }
+      ],
+      correctIndex: 0,
+      explanation: "<p>Bulb holders A and B each sit on their own complete loop with the battery, so when bulbs are placed in both A and B, each one has a closed circuit and lights up. The other combinations leave at least one bulb on a path that has a missing/empty holder, breaking the circuit.</p>"
+    },
+    {
+      id: 19,
+      section: "A",
+      type: "mcq",
+      stem: "A circuit is set up as shown below. Bulbs X and Y light up with equal brightness when the switch is closed.",
+      needsDiagram: true,
+      diagramKey: "q19_circuit_xy",
+      diagramLabel: "Circuit with bulbs X and Y and two batteries",
+      subStem: "What will happen to the brightness of bulb X if one battery is removed and the circuit is closed?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "It will not light up." },
+        { marker: "(2)", text: "It will become brighter." },
+        { marker: "(3)", text: "It will become dimmer." },
+        { marker: "(4)", text: "It will remain the same." }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Removing one of the two batteries reduces the amount of electrical energy supplied to the circuit. With less energy reaching the bulbs, bulb X will become <strong>dimmer</strong>.</p>"
+    },
+    {
+      id: 20,
+      section: "A",
+      type: "mcq",
+      stem: "Bulb Z is then connected to the circuit at A and B as shown below.",
+      needsDiagram: true,
+      diagramKey: "q20_circuit_xyz",
+      diagramLabel: "Circuit with bulbs X, Y and the new bulb Z added in parallel at A and B",
+      subStem: "What will happen to the brightness of bulb X?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "It will not light up." },
+        { marker: "(2)", text: "It will become brighter." },
+        { marker: "(3)", text: "It will become dimmer." },
+        { marker: "(4)", text: "It will remain the same." }
+      ],
+      correctIndex: 3,
+      explanation: "<p>Bulb Z has been added in a <strong>parallel branch</strong>. Adding a bulb in parallel does not change the amount of electrical energy reaching the original branch (the one with X and Y), so the brightness of bulb X stays the <em>same</em>.</p>"
+    },
+    {
+      id: 21,
+      section: "A",
+      type: "mcq",
+      stem: "Caleb conducted an experiment using a circuit and recorded his results in a table shown below.",
+      dataTable: {
+        headers: ["Switch P", "Switch Q", "Number of bulbs lit"],
+        rows: [
+          ["Open", "Open", "0"],
+          ["Close", "Open", "0"],
+          ["Open", "Close", "1"],
+          ["Close", "Close", "2"]
+        ]
+      },
+      subStem: "Which of the following circuits did Caleb use?",
+      needsDiagram: true,
+      diagramKey: "q21_caleb_circuits",
+      diagramLabel: "Four candidate circuits 1, 2, 3 and 4",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Circuit 1" },
+        { marker: "(2)", text: "Circuit 2" },
+        { marker: "(3)", text: "Circuit 3" },
+        { marker: "(4)", text: "Circuit 4" }
+      ],
+      correctIndex: 2,
+      explanation: "<p>Closing only switch Q lights 1 bulb, so Q controls one branch with one bulb that works on its own. Closing both switches lights 2 bulbs, so closing P adds another bulb on a separate branch. This matches a parallel arrangement where P and Q each control one bulb, and one of them (Q) is on the main path so its branch lights up by itself.</p>"
+    },
+    {
+      id: 22,
+      section: "A",
+      type: "mcq",
+      stem: "Gladys poured some water into a bottle through a funnel as shown below. After a while, the water stopped flowing into the bottle.",
+      needsDiagram: true,
+      diagramKey: "q22_funnel",
+      diagramLabel: "Funnel sealed into a bottle as Gladys pours water",
+      subStem: "Which of the following statements best explains why the water stopped flowing?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "The bottle was already full of water." },
+        { marker: "(2)", text: "The funnel tube was blocked by the water." },
+        { marker: "(3)", text: "The water could not change its shape to fit the funnel." },
+        { marker: "(4)", text: "Air trapped in the bottle prevented more water from entering." }
+      ],
+      correctIndex: 3,
+      explanation: "<p>The funnel seals the mouth of the bottle, so the air inside cannot escape. As water enters, the trapped air is compressed and pushes back. Eventually the air pressure inside is large enough to <strong>stop more water from flowing in</strong>.</p>"
+    },
+    {
+      id: 23,
+      section: "A",
+      type: "mcq",
+      stem: "The diagram below shows how some examples of matter are classified.",
+      needsDiagram: true,
+      diagramKey: "q23_matter",
+      diagramLabel: "Classification chart: X = rice, sugar, hair; Y = nitrogen, oil, steam",
+      subStem: "Which of the following correctly represents X and Y?",
+      optionsType: "table",
+      optionsTableHeaders: ["X", "Y"],
+      options: [
+        { marker: "(1)", cells: ["has mass", "has no mass"] },
+        { marker: "(2)", cells: ["has definite shape", "has no definite shape"] },
+        { marker: "(3)", cells: ["cannot be compressed", "can be compressed"] },
+        { marker: "(4)", cells: ["has definite volume", "has no definite volume"] }
+      ],
+      correctIndex: 1,
+      explanation: "<p>Group X (rice, sugar, hair) are all <strong>solids</strong> — they have a definite shape. Group Y (nitrogen, oil, steam) is a mix of liquid and gases — they have <strong>no definite shape</strong>. All matter has mass, and only gases can be compressed, so options (1) and (3) are wrong.</p>"
+    },
+    {
+      id: 24,
+      section: "A",
+      type: "mcq",
+      stem: "Which of the following statements are correct about the human systems?",
+      listItems: [
+        { marker: "A", text: "The respiratory system helps transport food to all parts of the body." },
+        { marker: "B", text: "The muscular system works together with the skeletal system to help us move." },
+        { marker: "C", text: "The digestive system breaks down food into simpler substances that can be absorbed." },
+        { marker: "D", text: "The circulatory system carries oxygen and digested food to all parts of the body." }
+      ],
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "A and B only" },
+        { marker: "(2)", text: "A and C only" },
+        { marker: "(3)", text: "B and D only" },
+        { marker: "(4)", text: "B, C and D only" }
+      ],
+      correctIndex: 3,
+      explanation: "<p>Statement A is wrong — the respiratory system handles gases, not food transport. The <strong>circulatory system</strong> transports food. Statements B, C and D are correct descriptions of the muscular, digestive and circulatory systems.</p>"
+    },
+    {
+      id: 25,
+      section: "A",
+      type: "mcq",
+      stem: "The graph shows the amount of undigested food in three different parts of the human digestive system.",
+      needsDiagram: true,
+      diagramKey: "q25_undigested_food",
+      diagramLabel: "Bar graph showing undigested food in parts A, B and C",
+      subStem: "Which of the following correctly matches A, B and C to the parts of the human digestive system?",
+      optionsType: "table",
+      optionsTableHeaders: ["A", "B", "C"],
+      options: [
+        { marker: "(1)", cells: ["small intestine", "mouth", "stomach"] },
+        { marker: "(2)", cells: ["small intestine", "stomach", "mouth"] },
+        { marker: "(3)", cells: ["mouth", "small intestine", "stomach"] },
+        { marker: "(4)", cells: ["mouth", "stomach", "small intestine"] }
+      ],
+      correctIndex: 2,
+      explanation: "<p>As food travels through the digestive system, it is broken down into smaller pieces — so the amount of <em>undigested</em> food becomes smaller. The mouth has the most undigested food (digestion has just started), then the stomach, and the small intestine has the least (most has been digested). So A = mouth (most), C = stomach (middle), B = small intestine (least).</p>"
+    },
+    {
+      id: 26,
+      section: "A",
+      type: "mcq",
+      stem: "Study the set-up below. A ball is placed between a screen and a torch.",
+      needsDiagram: true,
+      diagramKey: "q26_shadow_setup",
+      diagramLabel: "Torch, ball and screen set-up",
+      subStem: "Which of the following changes will cause the shadow on the screen to become larger?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Move the ball closer to the torch." },
+        { marker: "(2)", text: "Move the ball closer to the screen." },
+        { marker: "(3)", text: "Move the screen closer to the ball." },
+        { marker: "(4)", text: "Move the torch further from the screen." }
+      ],
+      correctIndex: 0,
+      explanation: "<p>Moving the ball <strong>closer to the torch</strong> means the ball blocks more of the spreading light, so the shadow on the screen grows larger. Moving it closer to the screen makes the shadow smaller and sharper.</p>"
+    },
+    {
+      id: 27,
+      section: "A",
+      type: "mcq",
+      stem: "Kayla was walking along the road at night from point A to D as shown below. A street lamp is positioned at B.",
+      needsDiagram: true,
+      diagramKey: "q27_walking_shadow",
+      diagramLabel: "Kayla walking past a street lamp at B, points A → B → D",
+      subStem: "Which of the following graphs correctly shows the changes in the size of her shadow from positions A to D?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "Graph 1 — straight line increasing throughout" },
+        { marker: "(2)", text: "Graph 2 — V-shape: shadow decreases as she walks towards B, then increases as she walks away" },
+        { marker: "(3)", text: "Graph 3 — inverted V: shadow increases up to B, then decreases" },
+        { marker: "(4)", text: "Graph 4 — curved line decreasing throughout" }
+      ],
+      correctIndex: 1,
+      explanation: "<p>As Kayla walks from A towards the lamp at B, the angle of the light hitting her becomes steeper, so her shadow becomes <em>shorter</em>. Right under the lamp, her shadow is the smallest. As she walks away towards D, the shadow lengthens again. This gives a <strong>V-shape graph</strong>.</p>"
+    },
+    {
+      id: 28,
+      section: "A",
+      type: "mcq",
+      stem: "Three beakers, A, B and C, contain water at different temperatures. Metal strips are placed in between the beakers as shown below. The arrows show the direction of heat flow.",
+      needsDiagram: true,
+      diagramKey: "q28_beakers_heat",
+      diagramLabel: "Beakers A, B and C connected by metal strips with heat-flow arrows",
+      subStem: "What can you conclude about the temperature of the water in beaker B compared to the other beakers?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "The water in beaker B has the lowest temperature." },
+        { marker: "(2)", text: "The water in beaker B has the highest temperature." },
+        { marker: "(3)", text: "The water in beaker B has the same temperature as the water in beaker A." },
+        { marker: "(4)", text: "The water in beaker B has the same temperature as the water in beaker C." }
+      ],
+      correctIndex: 0,
+      explanation: "<p>Heat always flows from a <em>hotter</em> to a <em>cooler</em> place. The arrows point from A → B and from C → B, so B is cooler than both A and C — it has the <strong>lowest temperature</strong>.</p>"
+    },
+    {
+      id: 29,
+      section: "A",
+      type: "mcq",
+      stem: "The set-up below shows a method to open the stuck metal lid on a glass jar by heating the metal lid with a lighter.",
+      needsDiagram: true,
+      diagramKey: "q29_metal_lid",
+      diagramLabel: "Heating a stuck metal lid on a glass jar with a lighter",
+      subStem: "Why was the metal lid easier to open after it was heated for some time?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "The metal lid softened when it was heated." },
+        { marker: "(2)", text: "The metal lid expanded more than the glass jar." },
+        { marker: "(3)", text: "Metal is a better conductor of heat than the glass." },
+        { marker: "(4)", text: "The air in the jar expanded in volume and pushed the metal lid open." }
+      ],
+      correctIndex: 1,
+      explanation: "<p>When the metal lid is heated, it gains heat and <strong>expands</strong> more than the glass jar (because metal expands more easily than glass). This loosens the lid's grip on the jar, making it easier to twist open.</p>"
+    },
+    {
+      id: 30,
+      section: "A",
+      type: "mcq",
+      stem: "A datalogger was used to record the temperature of water when ice cubes were added to it.",
+      needsDiagram: true,
+      diagramKey: "q30_datalogger_graph",
+      diagramLabel: "Temperature-time graph from datalogger as ice cubes are added to water",
+      subStem: "Which of the following explains the change in temperature shown on the graph?",
+      optionsType: "list",
+      options: [
+        { marker: "(1)", text: "The water lost heat to the ice cubes." },
+        { marker: "(2)", text: "The ice cubes lost heat to the water." },
+        { marker: "(3)", text: "The water gained heat from the ice cubes." },
+        { marker: "(4)", text: "The ice cubes and water gained heat from the surroundings." }
+      ],
+      correctIndex: 0,
+      explanation: "<p>The graph shows the water's temperature <em>decreasing</em>. This is because the warmer water <strong>lost heat</strong> to the cooler ice cubes. Heat always flows from the hotter object to the cooler one.</p>"
+    },
+
+    /* ============================================================
+       SECTION B — STRUCTURED QUESTIONS (Questions 31 to 41)
+       ============================================================ */
+    {
+      id: 31,
+      section: "B",
+      type: "structured",
+      stem: "The diagram below shows the process of fertilisation during human reproduction. X and Y are necessary for this process to take place.",
+      needsDiagram: true,
+      diagramKey: "q31_fertilisation",
+      diagramLabel: "Fertilisation diagram with X and Y labelled",
+      parts: [
+        {
+          label: "(a)",
+          text: "Identify X and Y. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "X: …\nY: …"
+        },
+        {
+          label: "(b)",
+          text: "The diagram below shows the parts of the reproductive systems of a human and a plant. Identify the parts where the fertilised egg will develop in the human and plant reproductive systems respectively. <span class=\"marks-tag\">[2]</span>",
+          needsDiagram: true,
+          diagramKey: "q31b_reproductive_systems",
+          diagramLabel: "Human and plant reproductive systems",
+          hasResponseInput: true,
+          responsePlaceholder: "Human: …\nPlant: …"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> X is the <strong>sperm cell</strong> (from the father). Y is the <strong>egg cell</strong> (from the mother).</p><p><strong>(b)</strong> In humans, the fertilised egg develops in the <strong>womb / uterus</strong>. In a flowering plant, the fertilised egg (zygote) develops inside the <strong>ovule</strong>, which is contained inside the <strong>ovary</strong>.</p>"
+    },
+    {
+      id: 32,
+      section: "B",
+      type: "structured",
+      stem: "A farmer planted fruit trees in rows. The trees were planted in rows at different distances between each tree. The farmer recorded the distances and the average number of fruits produced by each tree in one growing season.",
+      dataTable: {
+        headers: ["Distance (d) between the trees (m)", "2", "3", "4", "5", "6"],
+        rows: [
+          ["Number of fruits produced per tree", "20", "30", "45", "60", "65"]
+        ]
+      },
+      parts: [
+        {
+          label: "(a)",
+          text: "Based on the table, what is the relationship between the distance between the trees and the number of fruits produced per tree? <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type the relationship here…"
+        },
+        {
+          label: "(b)",
+          text: "Explain why the trees produce fewer fruits when they are too near to one another. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        },
+        {
+          label: "(c)",
+          text: "The trees bear fruit that are sweet, juicy and brightly-coloured. Its seeds are small and hard as shown below. Describe how the seeds are dispersed. <span class=\"marks-tag\">[2]</span>",
+          needsDiagram: true,
+          diagramKey: "q32c_fruit_seed",
+          diagramLabel: "Cross-section of the fruit showing small hard seeds in fleshy flesh",
+          hasResponseInput: true,
+          responsePlaceholder: "Describe the dispersal method here…"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> As the distance between the trees increases, the number of fruits produced per tree also increases.</p><p><strong>(b)</strong> When the trees are too close to one another, they have to compete more strongly for resources such as water, sunlight, mineral salts and space. With less of each resource, every tree makes less food and produces fewer fruits.</p><p><strong>(c)</strong> The seeds are dispersed by <strong>animals</strong>. The bright colour, sweet taste and juicy flesh attract animals to eat the fruit. The small, hard seeds are not chewed up — they pass through the animal's digestive system and come out in the animal's droppings far away from the parent plant, where they can germinate.</p>"
+    },
+    {
+      id: 33,
+      section: "B",
+      type: "structured",
+      stem: "Lina hung some clothes to dry on a bamboo pole in her kitchen as shown in diagram 1. Half an hour later, her father moved the clothes outside the windows as shown in diagram 2.",
+      needsDiagram: true,
+      diagramKey: "q33_drying_clothes",
+      diagramLabel: "Diagram 1: clothes drying inside the kitchen. Diagram 2: clothes moved outside the window.",
+      parts: [
+        {
+          label: "(a)",
+          text: "Water changed its state while the wet clothes were drying. State the process. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Process: …"
+        },
+        {
+          label: "(b)",
+          text: "Explain how the actions by her father would help the clothes dry in a shorter time. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        },
+        {
+          label: "(c)",
+          text: "Lina wanted to wear one of her favourite blouses in diagram 1 but it was still damp. She decided to iron it to dry it faster. While ironing it, she saw some mist form above the blouse. Explain how the mist was formed. <span class=\"marks-tag\">[2]</span>",
+          needsDiagram: true,
+          diagramKey: "q33c_ironing_mist",
+          diagramLabel: "Lina ironing the damp blouse with mist forming above it",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Evaporation.</p><p><strong>(b)</strong> Outside the window, the clothes are exposed to <strong>more wind</strong> and <strong>more heat from the sun</strong>. Both factors speed up evaporation, so the water in the clothes evaporates faster and the clothes dry in a shorter time.</p><p><strong>(c)</strong> The hot iron supplied heat to the water in the damp blouse. The water gained heat and <strong>evaporated</strong> into warm water vapour. The warm water vapour rose, came into contact with the cooler surrounding air above the blouse, lost heat and <strong>condensed</strong> into tiny water droplets, which is the mist Lina saw.</p>"
+    },
+    {
+      id: 34,
+      section: "B",
+      type: "structured",
+      stem: "Hakim conducted an experiment to obtain water. He hung an iron rod from a string so that it could move about freely as shown below. The blue-coloured water in beaker A started to boil after a while. The rod tilted on the right, and water droplets were collected in beaker B.",
+      needsDiagram: true,
+      diagramKey: "q34_water_collection",
+      diagramLabel: "Hakim's set-up: beaker A with boiling blue water, iron rod hanging on a string, beaker B collecting droplets",
+      parts: [
+        {
+          label: "(a)",
+          text: "What would be the colour of the water collected in beaker B? <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Colour: …"
+        },
+        {
+          label: "(b)",
+          text: "Explain why the glass / iron rod tilted downwards. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        },
+        {
+          label: "(c)",
+          text: "Suggest one way Hakim could increase the amount of water collected in beaker B without changing the set-up. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your suggestion here…"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Colourless.</p><p><strong>(b)</strong> When the blue water in beaker A boiled, it changed into <strong>water vapour</strong>. The water vapour rose, touched the cooler iron rod, lost heat and <strong>condensed</strong> into water droplets on the rod. As more droplets collected on the right side of the rod (above beaker B), that side became heavier and the rod tilted downwards on the right because the droplets have <em>mass</em>.</p><p><strong>(c)</strong> Hakim could <strong>increase the amount of heat</strong> supplied to beaker A (for example, turn the burner higher) so that more water evaporates per unit time, more water vapour condenses on the rod, and more water droplets are collected in beaker B. (Other accepted answers: use cold water / ice on the rod to cool it more so that more vapour condenses.)</p>"
+    },
+    {
+      id: 35,
+      section: "B",
+      type: "structured",
+      stem: "Farmers sometimes remove food-carrying tubes from the stem of a plant to make the fruits bigger and juicier in a technique called girdling.",
+      needsDiagram: true,
+      diagramKey: "q35_girdling",
+      diagramLabel: "Plant stem with girdled section labelled and main trunk R labelled",
+      parts: [
+        {
+          label: "(a)",
+          text: "Explain how girdling helps farmers get bigger fruits. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        },
+        {
+          label: "(b)",
+          text: "A farmer wants to remove the food-carrying tubes at R (the main trunk). Explain why this is not a good idea in the long run. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Girdling cuts the food-carrying tubes above the fruits. Food made by the leaves can no longer travel down past the cut. Instead, the food <strong>builds up</strong> in the part of the plant above the cut, including the fruits. With more stored food, the fruits grow <em>bigger and juicier</em>.</p><p><strong>(b)</strong> If the food-carrying tubes are removed at R (the main trunk), no food made by the leaves can be transported down to the <strong>roots</strong>. The roots will not have food for energy and growth and will eventually die. Without working roots, the plant cannot take in water and mineral salts, so the whole plant will wilt and die.</p>"
+    },
+    {
+      id: 36,
+      section: "B",
+      type: "structured",
+      stem: "Study the classification chart below.",
+      needsDiagram: true,
+      diagramKey: "q36_respiratory",
+      diagramLabel: "Classification chart of respiratory parts in different organisms with G and H to identify",
+      parts: [
+        {
+          label: "(a)",
+          text: "Identify parts G and H. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "G: …\nH: …"
+        },
+        {
+          label: "(b)",
+          text: "Explain how part H enables the fish to survive underwater but it does not work for humans when they use their lungs. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> G: <strong>stomata</strong> (tiny openings on the leaves of plants for gas exchange). H: <strong>gills</strong>.</p><p><strong>(b)</strong> Gills (H) are specially adapted to take in <strong>oxygen that is dissolved in water</strong>, so a fish can breathe underwater. Human lungs can only take in oxygen from <strong>air</strong>; they cannot take in oxygen that is dissolved in water, so humans cannot breathe underwater using their lungs.</p>"
+    },
+    {
+      id: 37,
+      section: "B",
+      type: "structured",
+      stem: "Walter set up electrical circuits 1 to 4 using identical batteries and identical bulbs. The batteries and bulbs are all working properly.",
+      needsDiagram: true,
+      diagramKey: "q37_circuits",
+      diagramLabel: "Four circuits with bulbs A, B, C and D arranged with different numbers of batteries and bulbs",
+      parts: [
+        {
+          label: "",
+          text: "Group bulbs A, B, C and D in the table below to show their brightness. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Brightly-lit bulb(s): …\nDimly-lit bulb(s): …"
+        }
+      ],
+      modelAnswer: "<p><strong>Brightly-lit bulb(s):</strong> C and D.</p><p><strong>Dimly-lit bulb(s):</strong> A and B.</p><p><em>Reasoning:</em> Bulbs A and B share a single battery between two bulbs in series, so each receives less electrical energy and lights up dimly. Bulbs C and D each have a full share of one or more batteries (C is powered by two batteries; D has one battery for one bulb), so they receive more electrical energy and light up brightly.</p>"
+    },
+    {
+      id: 38,
+      section: "B",
+      type: "structured",
+      stem: "Alicia constructed a circuit card. The diagram below shows the circuit card with points P, Q, R and S. Four of the points were connected with wires hidden behind the card.",
+      needsDiagram: true,
+      diagramKey: "q38_circuit_card",
+      diagramLabel: "Circuit card with four labelled points P, Q, R and S",
+      dataTable: {
+        headers: ["Pair of points tested", "Bulb lit up", "Bulb did not light up"],
+        rows: [
+          ["P and Q", "✓", ""],
+          ["P and R", "", "✓"],
+          ["R and S", "✓", ""]
+        ]
+      },
+      parts: [
+        {
+          label: "(a)",
+          text: "From the results above, draw two lines in the diagram below to show how Alicia connected the points with wires. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Describe the two connecting lines you would draw here…"
+        },
+        {
+          label: "(b)",
+          text: "Explain why the bulb did not light up when the wires were connected to P and R. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your explanation here…"
+        },
+        {
+          label: "(c)",
+          text: "Alicia placed a metal ruler between Q and R on the circuit card. She connected the wires of the circuit tester to Q and R. Do you think the bulb would light up? Give a reason for your answer. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Yes / No, because …"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Draw a wire from <strong>P to Q</strong>, and another wire from <strong>R to S</strong>. (P and Q are connected; R and S are connected; P and R are not connected.)</p><p><strong>(b)</strong> When the circuit tester is connected to P and R, there is <strong>no continuous metal path</strong> between P and R because no hidden wire links them directly or through another connected pair. The circuit is <em>open</em>, so electricity cannot flow and the bulb does not light up.</p><p><strong>(c)</strong> Yes. The metal ruler is a <strong>good conductor of electricity</strong>. Placing it across Q and R provides a complete path for electricity to flow through the circuit tester, so the bulb will light up.</p>"
+    },
+    {
+      id: 39,
+      section: "B",
+      type: "structured",
+      stem: "Megan glued two identical jars, E and F, to a beam balance. She pumped 600 cm³ of air into each jar, as shown below.",
+      needsDiagram: true,
+      diagramKey: "q39_beam_balance",
+      diagramLabel: "Balanced beam balance with jars E (left) and F (right) each holding 600 cm³ of air",
+      parts: [
+        {
+          label: "(a)",
+          text: "Megan then removed 200 cm³ of air from jar E. Describe what she would observe about the beam balance. Explain your answer. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Observation: …\nExplanation: …"
+        },
+        {
+          label: "(b)",
+          text: "Megan pumped out another 50 cm³ from jar E. What would the volume of air in jar E be now? Explain your answer. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Volume of air in jar E: …\nExplanation: …"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Jar E (the side with less air) will go <strong>up</strong>, and jar F (with more air) will go <strong>down</strong>. This is because air has <em>mass</em>. With 200 cm³ of air removed, jar E has less air and is therefore lighter than jar F, so the heavier side (F) sinks and the lighter side (E) rises.</p><p><strong>(b)</strong> The volume of air in jar E is still the <strong>full volume of the jar</strong> (the jar's capacity, which is bigger than 600 cm³ once you pump in extra air, but in either case it remains equal to the inside volume of the jar). This is because air has <strong>no definite volume</strong> — gases always spread out to fill the entire container they are in. Even after pumping more air out, the remaining air will expand to fill the whole jar.</p>"
+    },
+    {
+      id: 40,
+      section: "B",
+      type: "structured",
+      stem: "A light source was shone on the pupils' hands to form shadows on a screen.",
+      needsDiagram: true,
+      diagramKey: "q40_shadows",
+      diagramLabel: "Light source shining on pupils' hands to form shadows on a screen",
+      parts: [
+        {
+          label: "(a)",
+          text: "The pupils moved their hands closer to the light source. How would the sizes of the shadows change? Explain your answer. <span class=\"marks-tag\">[1]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Type your answer here…"
+        },
+        {
+          label: "(b)",
+          text: "The pupils replaced their hands with different materials and recorded the shadows formed on the screen. Complete the table below by stating the shadow observed and the property of each material. <span class=\"marks-tag\">[2]</span>",
+          dataTable: {
+            headers: ["Material", "Shadow observed", "Property of material"],
+            rows: [
+              ["Cardboard", "Dark shadow", "(i) ___________________"],
+              ["Coloured plastic sheet", "Faint shadow", "(ii) ___________________"],
+              ["Clear glass", "(iii) ___________________", "Allows most light to pass through"],
+              ["Aluminium foil", "(iv) ___________________", "Allows no light to pass through"]
+            ]
+          },
+          hasResponseInput: true,
+          responsePlaceholder: "(i) …\n(ii) …\n(iii) …\n(iv) …"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> The shadows would become <strong>larger</strong>. When the hands are closer to the light source, they block more of the spreading light rays, so a bigger area on the screen receives no light, producing a larger shadow.</p><p><strong>(b)</strong></p><p>(i) Cardboard → <strong>Allows no light to pass through</strong> (opaque).<br>(ii) Coloured plastic sheet → <strong>Allows some light to pass through</strong> (translucent).<br>(iii) Clear glass → <strong>Faint shadow / no clear shadow</strong>, because most light passes through (transparent).<br>(iv) Aluminium foil → <strong>Dark shadow</strong>, because no light passes through (opaque).</p>"
+    },
+    {
+      id: 41,
+      section: "B",
+      type: "structured",
+      stem: "The diagram below shows three identical cups made of different materials, A, B and C, on a food warmer. Each cup had the same amount of water at first. After 30 minutes, the amount of water left in each cup is as shown below.",
+      needsDiagram: true,
+      diagramKey: "q41_cups",
+      diagramLabel: "Three identical cups A, B and C on a food warmer, each holding water; the amount of water left after 30 minutes is shown",
+      parts: [
+        {
+          label: "(a)",
+          text: "Based on the results above, what can you conclude about the property of material B? Explain your answer. <span class=\"marks-tag\">[2]</span>",
+          hasResponseInput: true,
+          responsePlaceholder: "Property of B: …\nExplanation: …"
+        },
+        {
+          label: "(b)",
+          text: "The diagram below shows a rice cooker. The rice cooker has an inner pot and an outer body. Based on the results above, which material, A, B or C, is most suitable to make the inner pot of a rice cooker? Explain your answer. <span class=\"marks-tag\">[2]</span>",
+          needsDiagram: true,
+          diagramKey: "q41b_rice_cooker",
+          diagramLabel: "Rice cooker with the inner pot and outer body labelled",
+          hasResponseInput: true,
+          responsePlaceholder: "Most suitable material: …\nExplanation: …"
+        }
+      ],
+      modelAnswer: "<p><strong>(a)</strong> Material B is a <strong>poor conductor of heat</strong> (an insulator of heat). The amount of water left in cup B was the most (very little water evaporated), which shows that very little heat from the food warmer passed through material B into the water, so very little water gained enough heat to evaporate.</p><p><strong>(b)</strong> Material <strong>A</strong> is the most suitable for the inner pot of a rice cooker. The amount of water left in cup A was the least, meaning the most water evaporated, so material A is the <em>best conductor of heat</em>. The inner pot needs to conduct heat quickly from the heating element to the rice and water inside so that the rice cooks properly.</p>"
+    }
+  ];
+</script>
+
+<script>
+  /* ============================================================
+     State containers
+     ============================================================ */
+  var userAnswers = {};       // questionId -> selected MCQ index (live)
+  var submittedAnswers = {};  // questionId -> committed state ("shown" for structured)
+
+  /* ============================================================
+     Render — top-level
+     ============================================================ */
+  function renderAllQuestions() {
+    var containerA = document.getElementById('questionsContainerA');
+    var containerB = document.getElementById('questionsContainerB');
+    containerA.innerHTML = '';
+    containerB.innerHTML = '';
+
+    questions.forEach(function(q, index) {
+      var card = renderQuestionCard(q, index);
+      if (q.section === 'A') containerA.appendChild(card);
+      else containerB.appendChild(card);
+    });
+
+    document.getElementById('progressTotal').textContent = questions.length;
+    var totalMcq = questions.filter(function(q){ return q.type === 'mcq'; }).length;
+    document.getElementById('scoreTotal').textContent = totalMcq;
+    updateProgress();
+  }
+
+  /* ============================================================
+     Render a single question card
+     ============================================================ */
+  function renderQuestionCard(q, index) {
+    var card = document.createElement('article');
+    card.className = 'question-card';
+    card.id = 'question-card-' + q.id;
+    card.style.animationDelay = ((index % 8) * 70) + 'ms';
+
+    // Header (number + stem)
+    var header = document.createElement('div');
+    header.className = 'question-header';
+
+    var numberBadge = document.createElement('div');
+    numberBadge.className = 'question-number';
+    numberBadge.textContent = q.id;
+    header.appendChild(numberBadge);
+
+    var stem = document.createElement('div');
+    stem.className = 'question-stem';
+    stem.innerHTML = q.stem;
+    header.appendChild(stem);
+
+    card.appendChild(header);
+
+    // Optional inline data table (BEFORE diagram)
+    if (q.dataTable) {
+      card.appendChild(renderGenericTable(q.dataTable));
+    }
+
+    // Optional diagram
+    if (q.needsDiagram) {
+      card.appendChild(renderDiagramSection(q.diagramKey, q.diagramLabel, false));
+    }
+
+    // List items (A, B, C, D statements)
+    if (q.listItems && q.listItems.length) {
+      card.appendChild(renderListItems(q.listItems));
+    }
+
+    // Sub-stem (the actual question after context)
+    if (q.subStem) {
+      var subStem = document.createElement('div');
+      subStem.className = 'question-sub';
+      subStem.innerHTML = q.subStem;
+      card.appendChild(subStem);
+    }
+
+    if (q.type === 'mcq') {
+      // MCQ — options + submit button
+      if (q.optionsType === 'table') {
+        card.appendChild(renderOptionsAsTable(q));
+      } else {
+        card.appendChild(renderOptionsList(q));
+      }
+
+      card.appendChild(renderActionRow(q, 'mcq'));
+    } else if (q.type === 'structured') {
+      // Structured — render parts, optional response inputs
+      if (q.parts && q.parts.length) {
+        q.parts.forEach(function(part, partIdx) {
+          card.appendChild(renderStructuredPart(q, part, partIdx));
+        });
+      }
+      card.appendChild(renderActionRow(q, 'structured'));
+    }
+
+    // Feedback panel (initially empty)
+    var feedback = document.createElement('div');
+    feedback.className = 'feedback-panel';
+    feedback.id = 'feedback-' + q.id;
+    card.appendChild(feedback);
+
+    return card;
+  }
+
+  /* ============================================================
+     Render structured part (label, text, optional table/diagram, response)
+     ============================================================ */
+  function renderStructuredPart(q, part, partIdx) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'structured-part';
+    wrapper.style.marginTop = (partIdx === 0 ? '0' : 'var(--space-lg)');
+
+    if (part.text) {
+      var partStem = document.createElement('div');
+      partStem.className = 'question-sub';
+      partStem.innerHTML = (part.label ? '<strong>' + part.label + '</strong> ' : '') + part.text;
+      wrapper.appendChild(partStem);
+    }
+
+    if (part.dataTable) {
+      wrapper.appendChild(renderGenericTable(part.dataTable));
+    }
+
+    if (part.needsDiagram) {
+      wrapper.appendChild(renderDiagramSection(part.diagramKey, part.diagramLabel, false));
+    }
+
+    if (part.hasResponseInput) {
+      var responseSection = document.createElement('div');
+      responseSection.className = 'response-section';
+      var textarea = document.createElement('textarea');
+      textarea.className = 'response-input';
+      textarea.id = 'response-' + q.id + '-' + partIdx;
+      textarea.placeholder = part.responsePlaceholder || 'Write your answer here…';
+      responseSection.appendChild(textarea);
+      wrapper.appendChild(responseSection);
+    }
+
+    return wrapper;
+  }
+
+  /* ============================================================
+     Render list items (A, B, C, D statements box)
+     ============================================================ */
+  function renderListItems(items) {
+    var box = document.createElement('div');
+    box.className = 'list-items-box';
+    items.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'list-item';
+      div.innerHTML = '<span class="list-marker">' + item.marker + '</span>' + item.text;
+      box.appendChild(div);
+    });
+    return box;
+  }
+
+  /* ============================================================
+     Render generic data table
+     ============================================================ */
+  function renderGenericTable(tableData) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'data-table-wrapper';
+    var table = document.createElement('table');
+    table.className = 'data-table';
+
+    if (tableData.headers && tableData.headers.length) {
+      var thead = document.createElement('thead');
+      var headerRow = document.createElement('tr');
+      tableData.headers.forEach(function(h) {
+        var th = document.createElement('th');
+        th.innerHTML = h;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+    }
+
+    var tbody = document.createElement('tbody');
+    tableData.rows.forEach(function(row) {
+      var tr = document.createElement('tr');
+      row.forEach(function(cell) {
+        var td = document.createElement('td');
+        td.innerHTML = cell;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+
+    return wrapper;
+  }
+
+  /* ============================================================
+     Render MCQ options — plain list
+     ============================================================ */
+  function renderOptionsList(q) {
+    var list = document.createElement('div');
+    list.className = 'options-list';
+    list.id = 'options-' + q.id;
+
+    q.options.forEach(function(opt, idx) {
+      var item = document.createElement('div');
+      item.className = 'option-item';
+      item.dataset.questionId = q.id;
+      item.dataset.optionIndex = idx;
+      item.tabIndex = 0;
+      item.setAttribute('role', 'button');
+
+      var radio = document.createElement('div');
+      radio.className = 'option-radio';
+      item.appendChild(radio);
+
+      var label = document.createElement('div');
+      label.className = 'option-label';
+      label.innerHTML = '<span class="option-marker">' + opt.marker + '</span>' + opt.text;
+      item.appendChild(label);
+
+      item.addEventListener('click', function() { handleOptionSelect(q.id, idx); });
+      item.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOptionSelect(q.id, idx); }
+      });
+
+      list.appendChild(item);
+    });
+
+    return list;
+  }
+
+  /* ============================================================
+     Render MCQ options — comparison table
+     ============================================================ */
+  function renderOptionsAsTable(q) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'options-as-table';
+    wrapper.id = 'options-' + q.id;
+
+    var table = document.createElement('table');
+
+    var thead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+    var blankTh = document.createElement('th');
+    blankTh.textContent = '';
+    headerRow.appendChild(blankTh);
+    q.optionsTableHeaders.forEach(function(h) {
+      var th = document.createElement('th');
+      th.innerHTML = h;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    q.options.forEach(function(opt, idx) {
+      var tr = document.createElement('tr');
+      tr.dataset.questionId = q.id;
+      tr.dataset.optionIndex = idx;
+
+      var markerTd = document.createElement('td');
+      markerTd.className = 'option-marker-cell';
+      markerTd.textContent = opt.marker;
+      tr.appendChild(markerTd);
+
+      opt.cells.forEach(function(cell) {
+        var td = document.createElement('td');
+        td.innerHTML = cell;
+        tr.appendChild(td);
+      });
+
+      tr.addEventListener('click', function() { handleOptionSelect(q.id, idx); });
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+
+    return wrapper;
+  }
+
+  /* ============================================================
+     Render diagram section with image uploader
+     ============================================================ */
+  function renderDiagramSection(diagramKey, label, mini) {
+    var section = document.createElement('div');
+    section.className = 'diagram-section';
+
+    var labelEl = document.createElement('div');
+    labelEl.className = 'diagram-label';
+    labelEl.innerHTML = '<span class="label-tag">Diagram</span> ' + label;
+    section.appendChild(labelEl);
+
+    section.appendChild(renderImageUploader(diagramKey, label, mini));
+
+    return section;
+  }
+
+  /* ============================================================
+     Image uploader — drag, click, paste; admin-only upload
+     ============================================================ */
+  function renderImageUploader(diagramKey, label, mini) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'image-uploader' + (mini ? ' mini-uploader' : '');
+    wrapper.id = 'uploader-' + diagramKey;
+    wrapper.tabIndex = 0;
+    wrapper.dataset.diagramKey = diagramKey;
+
+    // Empty-state hint
+    var hint = document.createElement('div');
+    hint.className = 'upload-hint';
+    hint.innerHTML = '<div class="upload-hint-main">' + label + '</div>' +
+                     '<div class="upload-hint-sub">Admin: drag &amp; drop · click to browse · or Ctrl/Cmd+V to paste</div>';
+    wrapper.appendChild(hint);
+
+    // Hidden file input
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.className = 'upload-hidden-input';
+    fileInput.id = 'file-input-' + diagramKey;
+    wrapper.appendChild(fileInput);
+
+    // Spinner overlay (hidden by default)
+    var spinner = document.createElement('div');
+    spinner.className = 'upload-spinner';
+    spinner.id = 'spinner-' + diagramKey;
+    spinner.innerHTML = '<div class="spinner-circle"></div><div class="spinner-text">Uploading…</div>';
+    wrapper.appendChild(spinner);
+
+    // ----- events -----
+    wrapper.addEventListener('mouseenter', function() {
+      lastHoveredUploaderKey = diagramKey;
+    });
+    wrapper.addEventListener('focus', function() {
+      lastHoveredUploaderKey = diagramKey;
+    });
+
+    wrapper.addEventListener('click', function(e) {
+      if (wrapper.classList.contains('has-image')) return;
+      if (wrapper.classList.contains('locked')) {
+        showToast('Sign in as admin to upload diagrams.', 'error');
+        return;
+      }
+      if (!isAdmin) {
+        showToast('Only admin (' + ADMIN_EMAIL + ') can upload diagrams.', 'error');
+        return;
+      }
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (file) handleFileUpload(file, diagramKey);
+      e.target.value = ''; // reset so same file can be re-selected
+    });
+
+    // Drag & drop
+    wrapper.addEventListener('dragenter', function(e) { e.preventDefault(); e.stopPropagation(); if (isAdmin) wrapper.classList.add('drag-over'); });
+    wrapper.addEventListener('dragover',  function(e) { e.preventDefault(); e.stopPropagation(); if (isAdmin) wrapper.classList.add('drag-over'); });
+    wrapper.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); wrapper.classList.remove('drag-over'); });
+    wrapper.addEventListener('drop', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      wrapper.classList.remove('drag-over');
+      if (!isAdmin) { showToast('Only admin can upload diagrams.', 'error'); return; }
+      var file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) handleFileUpload(file, diagramKey);
+    });
+
+    // After mounting, refresh state in case admin already loaded image map
+    setTimeout(function() {
+      refreshUploaderState(diagramKey);
+    }, 0);
+
+    return wrapper;
+  }
+
+  /* ============================================================
+     Action row (submit / show-answer + reset)
+     ============================================================ */
+  function renderActionRow(q, mode) {
+    var row = document.createElement('div');
+    row.className = 'action-row';
+
+    var leftWrap = document.createElement('div');
+    leftWrap.className = 'action-row-left';
+
+    var submitButton = document.createElement('button');
+    submitButton.className = 'submit-button';
+    submitButton.id = 'submit-' + q.id;
+    submitButton.type = 'button';
+
+    if (mode === 'mcq') {
+      submitButton.innerHTML = '<span>Submit answer</span>';
+      submitButton.disabled = true;
+      submitButton.addEventListener('click', function() { handleMcqSubmit(q.id); });
+    } else {
+      submitButton.innerHTML = '<span>Show suggested answer</span>';
+      submitButton.addEventListener('click', function() { handleShowAnswer(q.id); });
+    }
+    leftWrap.appendChild(submitButton);
+
+    var resetButton = document.createElement('button');
+    resetButton.className = 'reset-button';
+    resetButton.id = 'reset-' + q.id;
+    resetButton.type = 'button';
+    resetButton.style.display = 'none';
+    resetButton.innerHTML = (mode === 'mcq' ? 'Try again' : 'Hide answer');
+    resetButton.addEventListener('click', function() { handleReset(q.id); });
+    leftWrap.appendChild(resetButton);
+
+    row.appendChild(leftWrap);
+
+    var rightInfo = document.createElement('div');
+    rightInfo.className = 'action-row-right';
+    rightInfo.innerHTML = (mode === 'mcq' ? 'Question ' + q.id + ' · MCQ' : 'Question ' + q.id + ' · Structured');
+    row.appendChild(rightInfo);
+
+    return row;
+  }
+
+  /* ============================================================
+     MCQ — option select
+     ============================================================ */
+  function handleOptionSelect(questionId, optionIndex) {
+    if (submittedAnswers[questionId] !== undefined) return; // locked
+
+    userAnswers[questionId] = optionIndex;
+
+    var optionsContainer = document.getElementById('options-' + questionId);
+    if (!optionsContainer) return;
+
+    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+    items.forEach(function(item) { item.classList.remove('selected'); });
+
+    var target = optionsContainer.querySelector('[data-option-index="' + optionIndex + '"]');
+    if (target) target.classList.add('selected');
+
+    var submitBtn = document.getElementById('submit-' + questionId);
+    if (submitBtn) submitBtn.disabled = false;
+  }
+
+  /* ============================================================
+     MCQ — submit
+     ============================================================ */
+  function handleMcqSubmit(questionId) {
+    if (userAnswers[questionId] === undefined) return;
+    if (submittedAnswers[questionId] !== undefined) return;
+
+    submittedAnswers[questionId] = userAnswers[questionId];
+
+    var q = questions.find(function(qq) { return qq.id === questionId; });
+    var userAnswer = userAnswers[questionId];
+    var isCorrect = userAnswer === q.correctIndex;
+    var card = document.getElementById('question-card-' + questionId);
+
+    var optionsContainer = document.getElementById('options-' + questionId);
+    var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+    items.forEach(function(item) {
+      item.classList.add('disabled');
+      item.classList.remove('selected');
+      var idx = parseInt(item.dataset.optionIndex, 10);
+      if (idx === q.correctIndex) item.classList.add('correct-answer');
+      else if (idx === userAnswer) item.classList.add('wrong-answer');
+    });
+
+    if (isCorrect) card.classList.add('answered-correct');
+    else card.classList.add('answered-wrong');
+
+    var submitBtn = document.getElementById('submit-' + questionId);
+    submitBtn.disabled = true;
+    submitBtn.classList.add(isCorrect ? 'submitted' : 'submitted-wrong');
+    submitBtn.innerHTML = '<span>' + (isCorrect ? 'Correct!' : 'Submitted') + '</span>';
+
+    var resetBtn = document.getElementById('reset-' + questionId);
+    if (resetBtn) resetBtn.style.display = 'inline-flex';
+
+    showMcqFeedback(q, userAnswer, isCorrect);
+
+    // Log attempt to Firestore (optional, non-blocking)
+    logAttempt(q.id, userAnswer, isCorrect);
+
+    updateProgress();
+    checkAllAnswered();
+  }
+
+  /* ============================================================
+     Structured — show suggested answer
+     ============================================================ */
+  function handleShowAnswer(questionId) {
+    var q = questions.find(function(qq) { return qq.id === questionId; });
+    if (!q) return;
+    submittedAnswers[questionId] = "shown";
+
+    var card = document.getElementById('question-card-' + questionId);
+    card.classList.add('answer-revealed');
+
+    var feedback = document.getElementById('feedback-' + questionId);
+    feedback.classList.remove('correct', 'wrong');
+    feedback.classList.add('revealed');
+    feedback.innerHTML =
+      '<div class="feedback-header">' +
+        '<div class="feedback-icon-circle revealed">★</div>' +
+        '<div class="feedback-title revealed">Suggested answer</div>' +
+      '</div>' +
+      '<div class="explanation-heading">Marker\u2019s notes</div>' +
+      '<div class="explanation-body">' + q.modelAnswer + '</div>';
+
+    var submitBtn = document.getElementById('submit-' + questionId);
+    submitBtn.classList.add('answer-shown');
+    submitBtn.innerHTML = '<span>Answer shown</span>';
+    submitBtn.disabled = true;
+
+    var resetBtn = document.getElementById('reset-' + questionId);
+    if (resetBtn) resetBtn.style.display = 'inline-flex';
+
+    feedback.classList.add('visible');
+    updateProgress();
+    checkAllAnswered();
+  }
+
+  /* ============================================================
+     Reset a single question
+     ============================================================ */
+  function handleReset(questionId) {
+    var q = questions.find(function(qq) { return qq.id === questionId; });
+    if (!q) return;
+    var card = document.getElementById('question-card-' + questionId);
+    card.classList.remove('answered-correct', 'answered-wrong', 'answer-revealed');
+
+    var submitBtn = document.getElementById('submit-' + questionId);
+    submitBtn.classList.remove('submitted', 'submitted-wrong', 'answer-shown');
+    submitBtn.disabled = (q.type === 'mcq');
+
+    var resetBtn = document.getElementById('reset-' + questionId);
+    resetBtn.style.display = 'none';
+
+    var feedback = document.getElementById('feedback-' + questionId);
+    feedback.classList.remove('visible', 'correct', 'wrong', 'revealed');
+    setTimeout(function() { feedback.innerHTML = ''; }, 400);
+
+    delete userAnswers[questionId];
+    delete submittedAnswers[questionId];
+
+    if (q.type === 'mcq') {
+      submitBtn.innerHTML = '<span>Submit answer</span>';
+      var optionsContainer = document.getElementById('options-' + questionId);
+      if (optionsContainer) {
+        var items = optionsContainer.querySelectorAll('.option-item, .options-as-table tbody tr');
+        items.forEach(function(item) {
+          item.classList.remove('selected', 'correct-answer', 'wrong-answer', 'disabled');
+        });
+      }
+    } else {
+      submitBtn.innerHTML = '<span>Show suggested answer</span>';
+    }
+
+    // Hide score summary if currently shown
+    var summary = document.getElementById('scoreSummary');
+    summary.classList.remove('visible');
+    setTimeout(function() {
+      if (!summary.classList.contains('visible')) summary.style.display = 'none';
+    }, 500);
+
+    updateProgress();
+  }
+
+  /* ============================================================
+     Feedback panel — MCQ
+     ============================================================ */
+  function showMcqFeedback(q, userAnswer, isCorrect) {
+    var feedback = document.getElementById('feedback-' + q.id);
+    feedback.classList.remove('revealed');
+    feedback.classList.add(isCorrect ? 'correct' : 'wrong');
+
+    var correctOpt = q.options[q.correctIndex];
+    var iconClass = isCorrect ? 'correct' : 'wrong';
+    var iconChar = isCorrect ? '✓' : '✗';
+    var titleText = isCorrect ? 'Correct!' : 'Not quite — let\u2019s look at why.';
+
+    feedback.innerHTML =
+      '<div class="feedback-header">' +
+        '<div class="feedback-icon-circle ' + iconClass + '">' + iconChar + '</div>' +
+        '<div class="feedback-title ' + iconClass + '">' + titleText + '</div>' +
+      '</div>' +
+      '<div class="feedback-answer-line">' +
+        'The correct answer is <span class="answer-pill">' + correctOpt.marker + '</span>' +
+      '</div>' +
+      '<div class="explanation-heading">Explanation</div>' +
+      '<div class="explanation-body">' + q.explanation + '</div>';
+
+    feedback.classList.add('visible');
+  }
+
+  /* ============================================================
+     Progress bar
+     ============================================================ */
+  function updateProgress() {
+    var total = questions.length;
+    var answered = Object.keys(submittedAnswers).length;
+    var pct = total === 0 ? 0 : (answered / total) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').innerHTML = '<strong>' + answered + '</strong> of <strong>' + total + '</strong> questions answered';
+
+    var mcqAttempted = 0;
+    var mcqCorrect = 0;
+    questions.forEach(function(q) {
+      if (q.type !== 'mcq') return;
+      if (submittedAnswers[q.id] !== undefined) {
+        mcqAttempted++;
+        if (submittedAnswers[q.id] === q.correctIndex) mcqCorrect++;
+      }
+    });
+    document.getElementById('mcqAttempted').textContent = mcqAttempted;
+    document.getElementById('mcqCorrect').textContent = mcqCorrect;
+  }
+
+  /* ============================================================
+     Check whole-paper completion
+     ============================================================ */
+  function checkAllAnswered() {
+    var answered = Object.keys(submittedAnswers).length;
+    if (answered === questions.length) {
+      var mcq = questions.filter(function(q) { return q.type === 'mcq'; });
+      var correct = 0;
+      mcq.forEach(function(q) {
+        if (submittedAnswers[q.id] === q.correctIndex) correct++;
+      });
+      var total = mcq.length;
+      document.getElementById('scoreCorrect').textContent = correct;
+      document.getElementById('scoreTotal').textContent = total;
+
+      var ratio = correct / total;
+      var msg = '';
+      if (ratio === 1) msg = 'Outstanding — full marks on the MCQ section. Brilliant work!';
+      else if (ratio >= 0.85) msg = 'Excellent. You are well-prepared for the EOY.';
+      else if (ratio >= 0.7) msg = 'Solid effort. Review the questions you got wrong and try again.';
+      else if (ratio >= 0.5) msg = 'Good attempt. Read the explanations carefully and look for patterns in your mistakes.';
+      else msg = 'Keep going! Re-read each explanation and try the questions again.';
+      document.getElementById('scoreMessage').textContent = msg + ' (Structured questions are reviewed by your teacher.)';
+
+      var summary = document.getElementById('scoreSummary');
+      summary.style.display = 'block';
+      setTimeout(function() { summary.classList.add('visible'); }, 30);
+    }
+  }
+
+  /* ============================================================
+     Restart paper
+     ============================================================ */
+  function restartPaper() {
+    questions.forEach(function(q) { handleReset(q.id); });
+    var summary = document.getElementById('scoreSummary');
+    summary.classList.remove('visible');
+    setTimeout(function() { summary.style.display = 'none'; }, 500);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ============================================================
+     Toast notifications
+     ============================================================ */
+  function showToast(message, type) {
+    var container = document.getElementById('toastContainer');
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + (type || 'info');
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(function() { toast.classList.add('visible'); }, 10);
+    setTimeout(function() {
+      toast.classList.remove('visible');
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+  }
+
+  /* ============================================================
+     Firebase auth — Google sign-in for admin
+     ============================================================ */
+  var signInButton = document.getElementById('signInButton');
+  var signInLabel = document.getElementById('signInLabel');
+
+  signInButton.addEventListener('click', function() {
+    if (currentUser) {
+      // Sign out
+      auth.signOut().then(function() {
+        showToast('Signed out.', 'info');
+      });
+      return;
+    }
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then(function(result) {
+        // onAuthStateChanged will handle UI update
+      })
+      .catch(function(error) {
+        console.error('Sign-in error:', error);
+        showToast('Sign-in failed: ' + error.message, 'error');
+      });
+  });
+
+  auth.onAuthStateChanged(function(user) {
+    currentUser = user;
+    isAdmin = !!(user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
+    if (user) {
+      var initial = (user.displayName || user.email || '?').charAt(0).toUpperCase();
+      var nameLabel = (user.displayName ? user.displayName.split(' ')[0] : (user.email || '').split('@')[0]);
+      signInButton.innerHTML =
+        '<span class="header-user-pill"><span class="user-avatar">' + initial + '</span>' +
+          nameLabel +
+          (isAdmin ? '<span class="admin-badge">ADMIN</span>' : '') +
+        '</span>';
+    } else {
+      signInButton.innerHTML = '<span class="header-icon">👤</span><span id="signInLabel">Sign in</span>';
+    }
+
+    // Refresh all uploaders to reflect admin lock status
+    questions.forEach(function(q) {
+      if (q.diagramKey) refreshUploaderState(q.diagramKey);
+      if (q.parts) q.parts.forEach(function(part) { if (part.diagramKey) refreshUploaderState(part.diagramKey); });
+    });
+  });
+
+  /* ============================================================
+     Firestore — load saved diagram URLs and listen for updates
+     ============================================================ */
+  function loadSavedDiagrams() {
+    APP_DOC_REF.get()
+      .then(function(doc) {
+        if (doc.exists) {
+          var data = doc.data();
+          if (data && data.images) {
+            diagramImages = data.images;
+            Object.keys(diagramImages).forEach(function(key) {
+              applyImageToUploader(key, diagramImages[key]);
+            });
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error('Failed to load saved diagrams:', err);
+      });
+
+    // Real-time listener for shared diagram updates
+    APP_DOC_REF.onSnapshot(function(doc) {
+      if (doc.exists) {
+        var data = doc.data();
+        if (data && data.images) {
+          diagramImages = data.images;
+          Object.keys(diagramImages).forEach(function(key) {
+            applyImageToUploader(key, diagramImages[key]);
+          });
+        }
+      }
+    }, function(err) {
+      console.error('Snapshot listener error:', err);
+    });
+  }
+
+  /* ============================================================
+     Apply a stored image URL to an uploader DOM node
+     ============================================================ */
+  function applyImageToUploader(diagramKey, url) {
+    var wrapper = document.getElementById('uploader-' + diagramKey);
+    if (!wrapper) return;
+    if (!url) return;
+
+    // Clear existing children except hidden file input + spinner
+    var fileInput = wrapper.querySelector('.upload-hidden-input');
+    var spinner = wrapper.querySelector('.upload-spinner');
+
+    wrapper.innerHTML = '';
+
+    var imgWrapper = document.createElement('div');
+    imgWrapper.className = 'uploaded-image-wrapper';
+
+    var img = document.createElement('img');
+    img.className = 'uploaded-image';
+    img.src = url;
+    img.alt = diagramKey;
+    imgWrapper.appendChild(img);
+
+    if (isAdmin) {
+      var replaceBtn = document.createElement('button');
+      replaceBtn.className = 'replace-image-button';
+      replaceBtn.type = 'button';
+      replaceBtn.textContent = 'Replace';
+      replaceBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (fileInput) fileInput.click();
+      });
+      imgWrapper.appendChild(replaceBtn);
+    }
+
+    wrapper.appendChild(imgWrapper);
+    if (fileInput) wrapper.appendChild(fileInput);
+    if (spinner) wrapper.appendChild(spinner);
+
+    wrapper.classList.add('has-image');
+    wrapper.classList.remove('locked');
+  }
+
+  /* ============================================================
+     Refresh uploader visual state (locked vs. ready)
+     ============================================================ */
+  function refreshUploaderState(diagramKey) {
+    var wrapper = document.getElementById('uploader-' + diagramKey);
+    if (!wrapper) return;
+    var hasImage = wrapper.classList.contains('has-image');
+    if (hasImage) return; // already showing image
+
+    if (!isAdmin) {
+      wrapper.classList.add('locked');
+    } else {
+      wrapper.classList.remove('locked');
+    }
+  }
+
+  /* ============================================================
+     Handle file upload (admin-only)
+     ============================================================ */
+  function handleFileUpload(file, diagramKey) {
+    if (!isAdmin) {
+      showToast('Only admin (' + ADMIN_EMAIL + ') can upload diagrams.', 'error');
+      return;
+    }
+    if (!file.type.match(/^image\//)) {
+      showToast('Please choose an image file.', 'error');
+      return;
+    }
+    var spinner = document.getElementById('spinner-' + diagramKey);
+    if (spinner) spinner.classList.add('active');
+
+    var safeName = file.name.replace(/[^a-zA-Z0-9_.\-]/g, '_');
+    var path = 'apps/' + APP_ID + '/diagrams/' + diagramKey + '_' + Date.now() + '_' + safeName;
+    var ref = storage.ref(path);
+
+    ref.put(file).then(function(snapshot) {
+      return snapshot.ref.getDownloadURL();
+    }).then(function(url) {
+      diagramImages[diagramKey] = url;
+      // Save to Firestore — merge so we don't overwrite other diagrams
+      var update = {};
+      update['images.' + diagramKey] = url;
+      update['lastUpdated'] = firebase.firestore.FieldValue.serverTimestamp();
+      return APP_DOC_REF.set({ images: { [diagramKey]: url }, lastUpdated: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    }).then(function() {
+      if (spinner) spinner.classList.remove('active');
+      applyImageToUploader(diagramKey, diagramImages[diagramKey]);
+      showToast('Diagram uploaded successfully.', 'success');
+    }).catch(function(err) {
+      console.error('Upload failed:', err);
+      if (spinner) spinner.classList.remove('active');
+      showToast('Upload failed: ' + err.message, 'error');
+    });
+  }
+
+  /* ============================================================
+     Paste-anywhere handler — uploads to last-hovered uploader
+     ============================================================ */
+  document.addEventListener('paste', function(e) {
+    if (!isAdmin) return;
+
+    var items = (e.clipboardData || window.clipboardData) && (e.clipboardData || window.clipboardData).items;
+    if (!items) return;
+
+    var imageFile = null;
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      if (item.kind === 'file' && item.type.match(/^image\//)) {
+        imageFile = item.getAsFile();
+        break;
+      }
+    }
+
+    if (!imageFile) return;
+
+    if (!lastHoveredUploaderKey) {
+      showToast('Hover over a diagram slot first, then paste.', 'info');
+      return;
+    }
+
+    e.preventDefault();
+    handleFileUpload(imageFile, lastHoveredUploaderKey);
+  });
+
+  /* ============================================================
+     Optional — log a student attempt to Firestore
+     ============================================================ */
+  function logAttempt(questionId, userAnswerIndex, isCorrect) {
+    if (!currentUser) return; // students don't have to log in
+    try {
+      db.collection('apps').doc(APP_ID).collection('attempts').add({
+        questionId: questionId,
+        userAnswerIndex: userAnswerIndex,
+        isCorrect: isCorrect,
+        userEmail: currentUser.email || null,
+        userUid: currentUser.uid || null,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (err) {
+      console.warn('Could not log attempt:', err);
+    }
+  }
+
+  /* ============================================================
+     Restart button wiring
+     ============================================================ */
+  document.getElementById('restartButton').addEventListener('click', restartPaper);
+
+  /* ============================================================
+     Boot
+     ============================================================ */
+  renderAllQuestions();
+  loadSavedDiagrams();
+</script>
+
+</body>
+</html>
