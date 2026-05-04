@@ -355,6 +355,18 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  .question-prenote {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text-secondary);
+    background: var(--bg-soft);
+    border-left: 3px solid var(--accent-base);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-md);
+  }
+
   .question-header {
     display: flex;
     align-items: flex-start;
@@ -1683,6 +1695,7 @@
       id: 19,
       section: "A",
       type: "mcq",
+      preNote: "Study the diagram below and answer questions 19 and 20.",
       stem: "A circuit is set up as shown below. Bulbs X and Y light up with equal brightness when the switch is closed.",
       needsDiagram: true,
       diagramKey: "q19_circuit_xy",
@@ -2277,6 +2290,14 @@
     card.className = 'question-card';
     card.id = 'question-card-' + q.id;
     card.style.animationDelay = ((index % 8) * 70) + 'ms';
+
+    // Pre-note banner (e.g. linked-questions hint)
+    if (q.preNote) {
+      var preNote = document.createElement('div');
+      preNote.className = 'question-prenote';
+      preNote.innerHTML = q.preNote;
+      card.appendChild(preNote);
+    }
 
     // Header (number + stem)
     var header = document.createElement('div');
